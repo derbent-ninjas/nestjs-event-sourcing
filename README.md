@@ -1,37 +1,28 @@
-# Template for Event Sourcing in NestJS
+# Template for Event Sourcing in NestJS;
 
----
 
-## Event Storming diagram
+## Event Storming diagram:
 ...
-
---- 
 
 ## Overall structure:
 ...
 
-## Commands
+## Commands:
 ...
 
---- 
-
-## Events
+## Events:
 ...
 
---- 
 
-## Aggregates
+## Aggregates:
 ...
 
---- 
 
-## Projections
+## Projections:
 ...
 
----
-
-## Reactions
+## Reactions:
 ...
 
-## Conclusion
+## Conclusion:
 ...
