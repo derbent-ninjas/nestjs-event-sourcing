@@ -1,5 +1,5 @@
-import { Importable } from '../../infrastructure/shared/types/importable';
-import { Exportable } from '../../infrastructure/shared/types/exportable';
+import { Importable } from '../../../../infrastructure/shared/types/importable';
+import { Exportable } from '../../../../infrastructure/shared/types/exportable';
 
 export class StockItem
   implements Importable<StockItemData>, Exportable<StockItemData>

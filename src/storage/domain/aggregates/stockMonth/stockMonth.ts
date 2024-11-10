@@ -1,6 +1,6 @@
 import { StockItem } from './stockItem';
-import { Importable } from '../../infrastructure/shared/types/importable';
-import { Exportable } from '../../infrastructure/shared/types/exportable';
+import { Importable } from '../../../../infrastructure/shared/types/importable';
+import { Exportable } from '../../../../infrastructure/shared/types/exportable';
 
 export class StockMonth
   implements Importable<StockMonthData>, Exportable<StockMonthData>
