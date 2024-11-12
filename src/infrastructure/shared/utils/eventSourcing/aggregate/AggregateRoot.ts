@@ -1,10 +1,10 @@
-import { Entity } from './entity';
+import { ImportableExportable } from './importableExportable';
 import { IAggregate } from './IAggregate';
-import { Event } from './stockMonth/events/event';
+import { Event } from '../event/event';
 import * as assert from 'assert';
 
 export abstract class AggregateRoot<Data extends AggregateData>
-  extends Entity<Data>
+  extends ImportableExportable<Data>
   implements IAggregate
 {
   apply(event: Event): void {

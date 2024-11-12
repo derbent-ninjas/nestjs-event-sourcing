@@ -1,7 +1,7 @@
-import { Importable } from '../../../infrastructure/shared/types/importable';
-import { Exportable } from '../../../infrastructure/shared/types/exportable';
+import { Importable } from '../../../types/importable';
+import { Exportable } from '../../../types/exportable';
 
-export class Entity<Data extends Record<string, any>>
+export class ImportableExportable<Data extends Record<string, any>>
   implements Importable<Data>, Exportable<Data>
 {
   protected __data: Data;

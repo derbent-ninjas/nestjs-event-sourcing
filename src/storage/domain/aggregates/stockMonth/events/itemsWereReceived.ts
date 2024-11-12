@@ -1,5 +1,5 @@
 import { StockItem } from '../stockItem';
-import { Event } from './event';
+import { Event } from '../../../../../infrastructure/shared/utils/eventSourcing/event/event';
 
 export class ItemsWereReceived extends Event {
   data: ItemsWereReceivedEventData;

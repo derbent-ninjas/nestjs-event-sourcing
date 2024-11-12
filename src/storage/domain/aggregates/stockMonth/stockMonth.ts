@@ -1,5 +1,8 @@
 import { StockItem } from './stockItem';
-import { AggregateRoot, DefaultAggregateData } from '../AggregateRoot';
+import {
+  AggregateRoot,
+  DefaultAggregateData,
+} from '../../../../infrastructure/shared/utils/eventSourcing/aggregate/AggregateRoot';
 import { exhaustiveTypeException } from 'tsconfig-paths/lib/try-path';
 import { StockMonthWasOpened } from './events/stockMonthWasOpened';
 import { ItemsWereReceived } from './events/itemsWereReceived';

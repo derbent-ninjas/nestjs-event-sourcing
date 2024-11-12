@@ -1,4 +1,4 @@
-import { Event } from './event';
+import { Event } from '../../../../../infrastructure/shared/utils/eventSourcing/event/event';
 import { StockItem } from '../stockItem';
 
 export class StockMonthWasOpened extends Event {
