@@ -27,8 +27,8 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
     this.__data.locationId = event.data.locationId;
   }
 
-  private transformItemsWereReceived(_event: ItemsWereReceived) {
-    this.__data.items.push(..._event.data.items);
+  private transformItemsWereReceived(event: ItemsWereReceived) {
+    this.__data.items.push(...event.data.items);
   }
 }
 
