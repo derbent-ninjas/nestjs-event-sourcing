@@ -6,8 +6,10 @@ import {
 import { exhaustiveTypeException } from 'tsconfig-paths/lib/try-path';
 import { StockMonthWasOpened } from './events/stockMonthWasOpened';
 import { ItemsWereReceived } from './events/itemsWereReceived';
+import { ItemsWereShipped } from './events/itemsWereShipped';
+import * as _ from 'lodash';
 
-type AllEventTypes = StockMonthWasOpened | ItemsWereReceived;
+type AllEventTypes = StockMonthWasOpened | ItemsWereReceived | ItemsWereShipped;
 
 export class StockMonth extends AggregateRoot<StockMonthData> {
   transform(event: AllEventTypes): void {
@@ -15,6 +17,8 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
       this.transformStockMonthWasOpened(event);
     } else if (event instanceof ItemsWereReceived) {
       this.transformItemsWereReceived(event);
+    } else if (event instanceof ItemsWereShipped) {
+      this.transformItemsWereShipped(event);
     } else {
       exhaustiveTypeException(event);
     }
@@ -29,6 +33,10 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
 
   private transformItemsWereReceived(event: ItemsWereReceived) {
     this.__data.items.push(...event.data.items);
+  }
+
+  private transformItemsWereShipped(event: ItemsWereShipped) {
+    _.remove(this.__data.items, (item) => event.itemIdsSet.has(item.id));
   }
 }
 
