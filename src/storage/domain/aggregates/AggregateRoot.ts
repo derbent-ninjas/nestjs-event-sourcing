@@ -24,7 +24,7 @@ export abstract class AggregateRoot<Data extends AggregateData>
 
 type AggregateData = DefaultAggregateData & Record<string, any>;
 
-interface DefaultAggregateData {
+export interface DefaultAggregateData {
   aggregateId: string;
   aggregateVersion: number;
 }
