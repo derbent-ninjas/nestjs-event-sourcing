@@ -7,12 +7,10 @@ interface StockItemData {
   id: string;
   name: string;
   description: string;
-  attributes: {
-    isFlammable: boolean;
-    isFragile: boolean;
-    temperatureMode: TemperatureModeEnum;
-    weightGrams: number;
-  };
+  isFlammable: boolean;
+  isFragile: boolean;
+  temperatureMode: TemperatureModeEnum;
+  weightGrams: number;
   createdAt: Date;
   updatedAt: Date;
   removedAt: Date | null;
