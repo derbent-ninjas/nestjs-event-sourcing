@@ -12,7 +12,7 @@ type AllEventTypes = StockMonthWasOpened | ItemsWereReceived;
 export class StockMonth extends AggregateRoot<StockMonthData> {
   transform(event: AllEventTypes): void {
     if (event instanceof StockMonthWasOpened) {
-      return this.transformStockMonthWasOpened(event);
+      this.transformStockMonthWasOpened(event);
     } else if (event instanceof ItemsWereReceived) {
       this.transformItemsWereReceived(event);
     } else {
