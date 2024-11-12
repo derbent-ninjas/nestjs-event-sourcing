@@ -21,24 +21,14 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
   }
 
   private transformStockMonthWasOpened(event: StockMonthWasOpened) {
-    try {
-      this.__data.aggregateId = event.aggregateId;
-      this.__data.aggregateVersion = event.version;
-      this.__data.items = event.data.items;
-      this.__data.locationId = event.data.locationId;
-    } catch (e) {
-      console.log(`Error processing ${StockMonthWasOpened.name}: ${e}`);
-      throw e;
-    }
+    this.__data.aggregateId = event.aggregateId;
+    this.__data.aggregateVersion = event.version;
+    this.__data.items = event.data.items;
+    this.__data.locationId = event.data.locationId;
   }
 
   private transformItemsWereReceived(_event: ItemsWereReceived) {
-    try {
-      this.__data.items.push(..._event.data.items);
-    } catch (e) {
-      console.log(`Error processing ${ItemsWereReceived.name}: ${e}`);
-      throw e;
-    }
+    this.__data.items.push(..._event.data.items);
   }
 }
 
