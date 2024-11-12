@@ -1,5 +1,5 @@
 import { Entity } from '../entity';
-import { TemperatureModeEnum } from '../../enums/temperatureMode.enum';
+import { TemperatureModeEnum } from './enums/temperatureMode.enum';
 
 export class StockItem extends Entity<StockItemData> {}
 

@@ -1,6 +1,6 @@
 import { Entity } from './entity';
 import { IAggregate } from './IAggregate';
-import { Event } from '../events/event';
+import { Event } from './stockMonth/events/event';
 import * as assert from 'assert';
 
 export abstract class AggregateRoot<Data extends AggregateData>

@@ -1,5 +1,5 @@
 import { Event } from './event';
-import { StockItem } from '../aggregates/stockMonth/stockItem';
+import { StockItem } from '../stockItem';
 
 export class StockMonthWasOpened extends Event {
   data: StockMontWasOpenedData;

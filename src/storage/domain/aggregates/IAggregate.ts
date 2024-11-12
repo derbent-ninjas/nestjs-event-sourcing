@@ -1,4 +1,4 @@
-import { Event } from '../events/event';
+import { Event } from './stockMonth/events/event';
 
 export interface IAggregate {
   transform(event: Event): void;

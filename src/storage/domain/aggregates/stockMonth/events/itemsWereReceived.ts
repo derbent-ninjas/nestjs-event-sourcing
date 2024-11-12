@@ -1,4 +1,4 @@
-import { StockItem } from '../aggregates/stockMonth/stockItem';
+import { StockItem } from '../stockItem';
 import { Event } from './event';
 
 export class ItemsWereReceived extends Event {
