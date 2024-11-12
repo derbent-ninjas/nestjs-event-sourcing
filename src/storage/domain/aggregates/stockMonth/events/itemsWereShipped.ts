@@ -16,5 +16,6 @@ export class ItemsWereShipped extends Event {
 }
 
 interface ItemsWereShippedEventData {
+  gateId: string;
   items: StockItem[];
 }
