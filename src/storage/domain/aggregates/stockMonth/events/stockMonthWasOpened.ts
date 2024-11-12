@@ -11,5 +11,6 @@ export class StockMonthWasOpened extends Event {
 }
 
 interface StockMontWasOpenedData {
+  locationId: string;
   items: StockItem[];
 }

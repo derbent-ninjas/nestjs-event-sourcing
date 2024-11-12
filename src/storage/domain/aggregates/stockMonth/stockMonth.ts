@@ -22,6 +22,7 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
       this.__data.aggregateId = event.aggregateId;
       this.__data.aggregateVersion = event.version;
       this.__data.items = event.data.items;
+      this.__data.locationId = event.data.locationId;
     } catch (e) {
       console.log(`Error processing ${StockMonthWasOpened.name}: ${e}`);
       throw e;
@@ -39,5 +40,6 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
 }
 
 interface StockMonthData extends DefaultAggregateData {
+  locationId: string;
   items: StockItem[];
 }
