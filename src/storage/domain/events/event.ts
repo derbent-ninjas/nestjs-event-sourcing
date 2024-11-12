@@ -1,8 +1,6 @@
-import { StockMonthWasOpenedEventData } from './openStockMonthEventData';
+import { IEvent } from './IEvent';
 
-export type AllEventDataTypes = StockMonthWasOpenedEventData;
-
-export class Event<EventData extends AllEventDataTypes = AllEventDataTypes> {
+export class Event implements IEvent {
   seqId: number;
   eventId: string;
   eventName: string;
@@ -12,10 +10,10 @@ export class Event<EventData extends AllEventDataTypes = AllEventDataTypes> {
   causationId: string;
   correlationId: string;
   version: number;
-  data: EventData;
   createdAt: Date;
+  data: Record<string, any>;
 
-  constructor(raw: Event<EventData>) {
+  constructor(raw: Event) {
     this.seqId = raw.seqId;
     this.eventId = raw.eventId;
     this.eventName = raw.eventName;
