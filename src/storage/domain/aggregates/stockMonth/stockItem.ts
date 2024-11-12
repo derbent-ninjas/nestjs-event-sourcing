@@ -1,4 +1,5 @@
 import { Entity } from '../entity';
+import { TemperatureModeEnum } from '../../enums/temperatureMode.enum';
 
 export class StockItem extends Entity<StockItemData> {}
 
@@ -6,7 +7,12 @@ interface StockItemData {
   stockItemId: string;
   name: string;
   description: string;
-  quantity: number;
+  attributes: {
+    isFlammable: boolean;
+    isFragile: boolean;
+    temperatureMode: TemperatureModeEnum;
+    weightGrams: number;
+  };
   createdAt: Date;
   updatedAt: Date;
   removedAt: Date | null;
