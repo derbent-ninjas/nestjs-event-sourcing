@@ -1,8 +1,7 @@
 > Development notes, TODO:
-> - add StockMonthWasClosed event
+> - implement application layer
 > - add docker-compose (PostgresSQL or EventStore)
 > - implement dal layer
-> - implement application layer
 
 # Template for Event Sourcing in NestJS;
 
