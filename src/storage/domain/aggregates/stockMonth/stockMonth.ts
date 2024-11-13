@@ -9,12 +9,14 @@ import { ItemsWereReceived } from './events/itemsWereReceived';
 import { ItemsWereShipped } from './events/itemsWereShipped';
 import * as _ from 'lodash';
 import { InventoryWasAdjusted } from './events/inventoryWasAdjusted';
+import { StockMonthWasClosed } from './events/stockMonthWasClosed';
 
 type AllEventTypes =
   | StockMonthWasOpened
   | InventoryWasAdjusted
   | ItemsWereReceived
-  | ItemsWereShipped;
+  | ItemsWereShipped
+  | StockMonthWasClosed;
 
 export class StockMonth extends AggregateRoot<StockMonthData> {
   transform(event: AllEventTypes): void {
@@ -26,6 +28,8 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
       this.transformItemsWereReceived(event);
     } else if (event instanceof ItemsWereShipped) {
       this.transformItemsWereShipped(event);
+    } else if (event instanceof StockMonthWasClosed) {
+      // this event doesn't transform data
     } else {
       exhaustiveTypeException(event);
     }
