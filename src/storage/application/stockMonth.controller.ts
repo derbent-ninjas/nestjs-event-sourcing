@@ -1,7 +1,12 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { OpenStockMonthDto } from './dto/openStockMonth.dto';
 
-@Controller()
+@Controller('storage/stock-month')
+@ApiTags('storage/stock-month')
 export class StockMonthController {
-  @Post()
-  async openStockMonth() {}
+  @Post('/open')
+  async openStockMonth(@Body() body: OpenStockMonthDto) {
+    return { body };
+  }
 }
