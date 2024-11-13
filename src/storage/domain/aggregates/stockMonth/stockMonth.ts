@@ -8,13 +8,20 @@ import { StockMonthWasOpened } from './events/stockMonthWasOpened';
 import { ItemsWereReceived } from './events/itemsWereReceived';
 import { ItemsWereShipped } from './events/itemsWereShipped';
 import * as _ from 'lodash';
+import { InventoryWasAdjusted } from './events/inventoryWasAdjusted';
 
-type AllEventTypes = StockMonthWasOpened | ItemsWereReceived | ItemsWereShipped;
+type AllEventTypes =
+  | StockMonthWasOpened
+  | InventoryWasAdjusted
+  | ItemsWereReceived
+  | ItemsWereShipped;
 
 export class StockMonth extends AggregateRoot<StockMonthData> {
   transform(event: AllEventTypes): void {
     if (event instanceof StockMonthWasOpened) {
       this.transformStockMonthWasOpened(event);
+    } else if (event instanceof InventoryWasAdjusted) {
+      this.transformInventoryWasAdjusted(event);
     } else if (event instanceof ItemsWereReceived) {
       this.transformItemsWereReceived(event);
     } else if (event instanceof ItemsWereShipped) {
@@ -31,12 +38,25 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
     this.__data.locationId = event.data.locationId;
   }
 
+  private transformInventoryWasAdjusted(event: InventoryWasAdjusted) {
+    this.addItems(event.data.surplusItems);
+    this.removeItems(event.shortageItemsIdsSet);
+  }
+
   private transformItemsWereReceived(event: ItemsWereReceived) {
-    this.__data.items.push(...event.data.items);
+    this.addItems(event.data.items);
   }
 
   private transformItemsWereShipped(event: ItemsWereShipped) {
-    _.remove(this.__data.items, (item) => event.itemIdsSet.has(item.id));
+    this.removeItems(event.itemIdsSet);
+  }
+
+  private addItems(items: StockItem[]) {
+    this.__data.items.push(...items);
+  }
+
+  private removeItems(itemsToRemoveIdsSet: Set<string>) {
+    _.remove(this.__data.items, (item) => itemsToRemoveIdsSet.has(item.id));
   }
 }
 
