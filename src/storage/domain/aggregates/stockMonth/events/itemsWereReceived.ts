@@ -11,6 +11,6 @@ export class ItemsWereReceived extends Event {
 }
 
 interface ItemsWereReceivedEventData {
-  gateId: string;
+  gateNumber: string;
   items: StockItem[];
 }
