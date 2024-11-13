@@ -3,8 +3,8 @@ version: '3.1'
 services:
   db:
     image: postgres:16-alpine
-    hostname: db
-    container_name: db
+    hostname: nestjs-event-sourcing-db
+    container_name: nestjs-event-sourcing-db
     restart: no
     environment:
       POSTGRES_DB: ${DB_NAME}
