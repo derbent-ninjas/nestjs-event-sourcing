@@ -1,5 +1,5 @@
 > Development notes, TODO:
-> - add StockMonthWasClosedEvent
+> - add StockMonthWasClosed event
 > - add docker-compose (PostgresSQL or EventStore)
 > - implement dal layer
 > - implement application layer
