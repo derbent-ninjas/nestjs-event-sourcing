@@ -1,7 +1,4 @@
 import * as process from 'process';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const isRequired = (propName: string): never => {
   throw new Error(`Config property ${propName} is required`);
