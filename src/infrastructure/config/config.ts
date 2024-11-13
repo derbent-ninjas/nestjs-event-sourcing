@@ -6,7 +6,7 @@ const isRequired = (propName: string): never => {
 
 class Config {
   server = {
-    restPort: process.env.REST_PORT ?? isRequired('REST_PORT'),
+    port: Number(process.env.PORT ?? isRequired('PORT')),
   };
 
   db = {
