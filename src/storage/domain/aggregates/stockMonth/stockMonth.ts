@@ -10,6 +10,7 @@ import { ItemsWereShipped } from './events/itemsWereShipped';
 import * as _ from 'lodash';
 import { InventoryWasAdjusted } from './events/inventoryWasAdjusted';
 import { StockMonthWasClosed } from './events/stockMonthWasClosed';
+import { MonthCodeEnum } from './enums/monthCode.enum';
 
 type AllEventTypes =
   | StockMonthWasOpened
@@ -40,6 +41,7 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
     this.__data.aggregateVersion = event.version;
     this.__data.items = event.data.items;
     this.__data.locationId = event.data.locationId;
+    this.__data.month = event.data.month;
   }
 
   private transformInventoryWasAdjusted(event: InventoryWasAdjusted) {
@@ -65,6 +67,7 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
 }
 
 interface StockMonthData extends DefaultAggregateData {
+  month: MonthCodeEnum;
   locationId: string;
   items: StockItem[];
 }
