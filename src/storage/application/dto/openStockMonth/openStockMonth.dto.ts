@@ -1,4 +1,4 @@
-import { StockItemDto } from './stockItem.dto';
+import { StockItemDto } from '../stockItem.dto';
 import {
   IsInt,
   IsNotEmpty,
