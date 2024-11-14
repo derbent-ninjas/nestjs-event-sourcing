@@ -6,7 +6,10 @@ import { RandomService } from '../../../infrastructure/random/random.service';
 import { nowToMonthCode } from '../../../infrastructure/shared/utils/nowToMonthCode';
 import { TimeService } from '../../../infrastructure/time/time.service';
 import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
-import { STOCK_MONTH_IS_ALREADY_OPENED } from '../../../infrastructure/shared/errorMessages';
+import {
+  ITEMS_MUST_HAVE_UNIQUE_UUIDS,
+  STOCK_MONTH_IS_ALREADY_OPENED,
+} from '../../../infrastructure/shared/errorMessages';
 import { PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
 import { StockMonthWasOpened } from '../../domain/aggregates/stockMonth/events/stockMonthWasOpened';
 import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
@@ -40,6 +43,7 @@ export class OpenStockMonthService {
     const aggregateId = `${dto.locationId}_${monthCode}`;
 
     await this.assertStockMonthIsNotAlreadyOpened(aggregateId, transaction);
+    this.assertItemIdsAreUnique(dto);
 
     const event = new StockMonthWasOpened({
       seqId: PLACEHOLDER_ID,
@@ -82,6 +86,14 @@ export class OpenStockMonthService {
     );
     if (existingEvent) {
       throw new BadRequestException(STOCK_MONTH_IS_ALREADY_OPENED);
+    }
+  }
+
+  private assertItemIdsAreUnique(dto: OpenStockMonthDto): void {
+    const itemIds = dto.items.map((item) => item.id);
+    const uniqueItemIds = new Set(itemIds);
+    if (uniqueItemIds.size !== itemIds.length) {
+      throw new BadRequestException(ITEMS_MUST_HAVE_UNIQUE_UUIDS);
     }
   }
 }
