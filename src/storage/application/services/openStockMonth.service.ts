@@ -59,15 +59,7 @@ export class OpenStockMonthService {
       data: {
         month: monthCode,
         locationId: dto.locationId,
-        items: dto.items.map(
-          (item) =>
-            new StockItem({
-              ...item,
-              createdAt: now,
-              updatedAt: now,
-              removedAt: null,
-            }),
-        ),
+        items: dto.items.map((item) => StockItem.fromDto(item, { now })),
       },
     });
 

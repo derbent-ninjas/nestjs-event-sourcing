@@ -1,5 +1,6 @@
 import { TemperatureModeEnum } from './enums/temperatureMode.enum';
 import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
+import { StockItemDto } from '../../../application/dto/stockItem.dto';
 
 export class StockItem {
   id: string;
@@ -25,4 +26,17 @@ export class StockItem {
     this.updatedAt = raw.updatedAt;
     this.removedAt = raw.removedAt;
   }
+
+  static fromDto(item: StockItemDto, deps: Deps): StockItem {
+    return new StockItem({
+      ...item,
+      createdAt: deps.now,
+      updatedAt: deps.now,
+      removedAt: null,
+    });
+  }
+}
+
+interface Deps {
+  now: Date;
 }
