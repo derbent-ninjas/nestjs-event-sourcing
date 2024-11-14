@@ -1,13 +1,7 @@
-import { ImportableExportable } from '../../../../infrastructure/shared/utils/eventSourcing/aggregate/importableExportable';
 import { TemperatureModeEnum } from './enums/temperatureMode.enum';
+import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 
-export class StockItem extends ImportableExportable<StockItemData> {
-  get id() {
-    return this.__data.id;
-  }
-}
-
-interface StockItemData {
+export class StockItem {
   id: string;
   name: string;
   description: string;
@@ -18,4 +12,17 @@ interface StockItemData {
   createdAt: Date;
   updatedAt: Date;
   removedAt: Date | null;
+
+  constructor(raw: NoMethods<StockItem>) {
+    this.id = raw.id;
+    this.name = raw.name;
+    this.description = raw.description;
+    this.isFlammable = raw.isFlammable;
+    this.isFragile = raw.isFragile;
+    this.temperatureMode = raw.temperatureMode;
+    this.weightGrams = raw.weightGrams;
+    this.createdAt = raw.createdAt;
+    this.updatedAt = raw.updatedAt;
+    this.removedAt = raw.removedAt;
+  }
 }
