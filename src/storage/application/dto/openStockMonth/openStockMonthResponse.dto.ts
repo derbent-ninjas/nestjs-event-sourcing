@@ -1,19 +1,14 @@
-import { StockMonth } from '../../../domain/aggregates/stockMonth/stockMonth';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class OpenStockMonthResponseDto {
   @ApiProperty({ example: '251_OC' })
-  readonly stockMonthId: string;
+  readonly aggregateId: string;
 
   constructor(raw: OpenStockMonthResponseDto) {
-    this.stockMonthId = raw.stockMonthId;
+    this.aggregateId = raw.aggregateId;
   }
 
-  static from(stockMonth: StockMonth) {
-    const exported = stockMonth.export();
-
-    return new OpenStockMonthResponseDto({
-      stockMonthId: exported.aggregateId,
-    });
+  static from(aggregateId: string) {
+    return new OpenStockMonthResponseDto({ aggregateId });
   }
 }
