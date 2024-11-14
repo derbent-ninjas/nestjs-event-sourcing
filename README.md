@@ -1,9 +1,8 @@
 > Development notes, TODO:
-> - implement application layer
-> - add docker-compose (PostgresSQL or EventStore)
-> - implement dal layer
+> - implement services
+> - implement all endpoints
 
-# Template for Event Sourcing in NestJS;
+# Template for Event Sourcing in NestJS:
 
 
 ## Event Storming diagram:
