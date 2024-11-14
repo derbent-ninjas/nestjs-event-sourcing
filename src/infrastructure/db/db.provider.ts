@@ -4,7 +4,7 @@ import { StockMonthEventEntity } from '../../storage/dal/stockMonthEventEntity';
 
 export const databaseProviders = [
   {
-    provide: 'DATA_SOURCE',
+    provide: DataSource,
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'postgres',
