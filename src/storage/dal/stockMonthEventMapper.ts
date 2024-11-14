@@ -1,7 +1,7 @@
 import { StockMonthEventEntity } from './stockMonthEventEntity';
 import { Event } from '../../infrastructure/shared/utils/eventSourcing/event/event';
 
-export class StockMonthEventEntityMapper {
+export class StockMonthEventMapper {
   static toDomain(entity: StockMonthEventEntity): Event {
     return new Event(entity);
   }
