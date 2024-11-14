@@ -1,15 +1,13 @@
 import { StockItemDto } from '../stockItem.dto';
-import { IsInt, IsNotEmpty, Max, Min, ValidateNested } from 'class-validator';
+import { IsAlphanumeric, IsNotEmpty, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class OpenStockMonthDto {
   @IsNotEmpty()
-  @IsInt()
-  @Min(1)
-  @Max(Number.MAX_SAFE_INTEGER)
-  @ApiProperty({ example: 1 })
-  locationId!: number;
+  @IsAlphanumeric()
+  @ApiProperty({ example: '1' })
+  locationId!: string;
 
   @IsNotEmpty()
   @Type(() => StockItemDto)
