@@ -5,7 +5,7 @@ export interface IEvent {
   aggregateId: string;
   aggregateName: string;
   contextName: string;
-  causationId: string;
+  causationId: string | null;
   correlationId: string;
   version: number;
   data: Record<string, any>;

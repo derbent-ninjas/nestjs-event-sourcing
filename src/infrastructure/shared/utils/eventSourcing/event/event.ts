@@ -7,7 +7,7 @@ export class Event implements IEvent {
   aggregateId: string;
   aggregateName: string;
   contextName: string;
-  causationId: string;
+  causationId: string | null;
   correlationId: string;
   version: number;
   createdAt: Date;

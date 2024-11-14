@@ -52,7 +52,7 @@ export class OpenStockMonthService {
       aggregateId,
       aggregateName: StockMonth.name,
       contextName: STORAGE,
-      causationId: eventId,
+      causationId: null,
       correlationId: eventId,
       version: 1,
       createdAt: now,

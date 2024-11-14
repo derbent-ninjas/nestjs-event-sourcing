@@ -28,8 +28,8 @@ export class StockMonthEventEntity implements IEvent {
   @Column({ name: 'context_name' })
   contextName!: string;
 
-  @Column({ name: 'causation_id' })
-  causationId!: string;
+  @Column({ name: 'causation_id', type: 'varchar', nullable: true })
+  causationId!: string | null;
 
   @Column({ name: 'correlation_id' })
   correlationId!: string;
