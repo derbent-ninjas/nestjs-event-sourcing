@@ -4,13 +4,17 @@ import {
   DefaultAggregateData,
 } from '../../../../infrastructure/shared/utils/eventSourcing/aggregate/AggregateRoot';
 import { exhaustiveTypeException } from 'tsconfig-paths/lib/try-path';
-import { StockMonthWasOpened } from './events/stockMonthWasOpened';
+import {
+  assertEventIsStockMonthWasOpened,
+  StockMonthWasOpened,
+} from './events/stockMonthWasOpened';
 import { ItemsWereReceived } from './events/itemsWereReceived';
 import { ItemsWereShipped } from './events/itemsWereShipped';
 import * as _ from 'lodash';
 import { InventoryWasAdjusted } from './events/inventoryWasAdjusted';
 import { StockMonthWasClosed } from './events/stockMonthWasClosed';
 import { MonthCodeEnum } from './enums/monthCode.enum';
+import { Event } from '../../../../infrastructure/shared/utils/eventSourcing/event/event';
 
 type AllEventTypes =
   | StockMonthWasOpened
@@ -20,6 +24,21 @@ type AllEventTypes =
   | StockMonthWasClosed;
 
 export class StockMonth extends AggregateRoot<StockMonthData> {
+  get aggregateVersion() {
+    return this.__data.aggregateVersion;
+  }
+
+  static createByBaseEvent(event: Event): StockMonth {
+    assertEventIsStockMonthWasOpened(event);
+    return new StockMonth({
+      aggregateId: event.aggregateId,
+      aggregateVersion: 0,
+      month: event.data.month,
+      locationId: event.data.locationId,
+      items: event.data.items,
+    });
+  }
+
   transform(event: AllEventTypes): void {
     if (event instanceof StockMonthWasOpened) {
       this.transformStockMonthWasOpened(event);
