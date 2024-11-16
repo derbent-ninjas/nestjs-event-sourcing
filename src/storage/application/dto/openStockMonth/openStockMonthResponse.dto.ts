@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class OpenStockMonthResponseDto {
   @ApiProperty({ example: '251_OC' })
-  readonly aggregateId: string;
+  readonly stockMonthId: string;
 
   constructor(raw: OpenStockMonthResponseDto) {
-    this.aggregateId = raw.aggregateId;
+    this.stockMonthId = raw.stockMonthId;
   }
 
   static from(aggregateId: string) {
-    return new OpenStockMonthResponseDto({ aggregateId });
+    return new OpenStockMonthResponseDto({ stockMonthId: aggregateId });
   }
 }
