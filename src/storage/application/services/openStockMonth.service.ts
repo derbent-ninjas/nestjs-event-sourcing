@@ -51,7 +51,7 @@ export class OpenStockMonthService {
       aggregateName: StockMonth.name,
       contextName: STORAGE,
       causationId: null,
-      correlationId: eventId,
+      correlationId: aggregateId,
       version: 1,
       createdAt: now,
       data: {
@@ -70,7 +70,7 @@ export class OpenStockMonthService {
     aggregateId: string,
     transaction: EntityManager,
   ): Promise<void> {
-    const existingEvent = await this.repo.findByAggregateId(
+    const existingEvent = await this.repo.findOneByAggregateId(
       aggregateId,
       transaction,
     );
