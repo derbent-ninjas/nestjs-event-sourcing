@@ -6,7 +6,18 @@ import { StockMonthEventMapper } from './stockMonthEventMapper';
 
 @Injectable()
 export class StockMonthEventRepository {
-  async findByAggregateId(
+  async findManyByAggregateId(
+    aggregateId: string,
+    transaction: EntityManager,
+  ): Promise<Event[]> {
+    const events = await transaction
+      .getRepository(StockMonthEventEntity)
+      .find({ where: { aggregateId } });
+
+    return events.map((event) => StockMonthEventMapper.toDomain(event));
+  }
+
+  async findOneByAggregateId(
     aggregateId: string,
     transaction: EntityManager,
   ): Promise<Event | null> {
@@ -15,6 +26,17 @@ export class StockMonthEventRepository {
       .findOne({ where: { aggregateId } });
 
     return event ? StockMonthEventMapper.toDomain(event) : null;
+  }
+
+  async findManyByEventId(
+    eventId: string,
+    transaction: EntityManager,
+  ): Promise<Event[]> {
+    const events = await transaction
+      .getRepository(StockMonthEventEntity)
+      .find({ where: { eventId } });
+
+    return events.map((event) => StockMonthEventMapper.toDomain(event));
   }
 
   async save(
