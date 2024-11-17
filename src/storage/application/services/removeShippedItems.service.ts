@@ -1,21 +1,21 @@
-import { AddReceivedItemsDto } from '../dto/addReceivedItems.ts/addReceivedItems.dto';
-import { AddReceivedItemsResponseDto } from '../dto/addReceivedItems.ts/addReceivedItemsResponse.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { RemoveShippedItemsDto } from '../dto/removeShippedItems/removeShippedItems.dto';
+import { RemoveShippedItemsResponseDto } from '../dto/removeShippedItems/removeShippedItemsResponse.dto';
 import { DataSource, EntityManager } from 'typeorm';
 import { RandomService } from '../../../infrastructure/random/random.service';
 import { TimeService } from '../../../infrastructure/time/time.service';
 import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
-import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { RECEIVED_ITEMS_WERE_ALREADY_ADDED } from '../../../infrastructure/shared/errorMessages';
-import { ItemsWereReceived } from '../../domain/aggregates/stockMonth/events/itemsWereReceived';
+import { assertItemIdsAreUnique } from '../../domain/aggregates/stockMonth/utils/asserts/assertItemIdsAreUnique';
 import { PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
+import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
 import { STORAGE } from '../../../infrastructure/shared/contexts';
 import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
-import { assertItemIdsAreUnique } from '../../domain/aggregates/stockMonth/utils/asserts/assertItemIdsAreUnique';
+import { SHIPPED_ITEMS_ALREADY_REMOVED } from '../../../infrastructure/shared/errorMessages';
+import { ItemsWereShipped } from '../../domain/aggregates/stockMonth/events/itemsWereShipped';
 import { HydrationService } from './hydration.service';
 
 @Injectable()
-export class AddReceivedItemsService {
+export class RemoveShippedItemsService {
   constructor(
     private readonly dataSource: DataSource,
     private readonly random: RandomService,
@@ -25,17 +25,17 @@ export class AddReceivedItemsService {
   ) {}
 
   async runTransaction(
-    dto: AddReceivedItemsDto,
-  ): Promise<AddReceivedItemsResponseDto> {
+    dto: RemoveShippedItemsDto,
+  ): Promise<RemoveShippedItemsResponseDto> {
     return this.dataSource.transaction('SERIALIZABLE', (transaction) => {
-      return this.addReceivedItems(dto, transaction);
+      return this.removeShippedItems(dto, transaction);
     });
   }
 
-  async addReceivedItems(
-    dto: AddReceivedItemsDto,
+  async removeShippedItems(
+    dto: RemoveShippedItemsDto,
     transaction: EntityManager,
-  ): Promise<AddReceivedItemsResponseDto> {
+  ): Promise<RemoveShippedItemsResponseDto> {
     const aggregateId = dto.stockMonthId;
 
     const aggregate = await this.hydrationService.hydrateAggregateForId(
@@ -44,14 +44,14 @@ export class AddReceivedItemsService {
     );
 
     const eventId = this.random.uuid(dto.requestId);
-    await this.assertItemsAreNotAlreadyAdded(eventId, transaction);
+    await this.assertItemsAreNotAlreadyRemoved(eventId, transaction);
     assertItemIdsAreUnique(dto);
 
     const now = this.time.now();
-    const event = new ItemsWereReceived({
+    const event = new ItemsWereShipped({
       seqId: PLACEHOLDER_ID,
       eventId,
-      eventName: ItemsWereReceived.name,
+      eventName: ItemsWereShipped.name,
       aggregateId,
       aggregateName: StockMonth.name,
       contextName: STORAGE,
@@ -67,10 +67,10 @@ export class AddReceivedItemsService {
 
     await this.repo.save(event, transaction);
 
-    return AddReceivedItemsResponseDto.from(aggregateId);
+    return RemoveShippedItemsResponseDto.from(aggregateId);
   }
 
-  private async assertItemsAreNotAlreadyAdded(
+  private async assertItemsAreNotAlreadyRemoved(
     eventId: string,
     transaction: EntityManager,
   ): Promise<void> {
@@ -80,7 +80,7 @@ export class AddReceivedItemsService {
     );
 
     if (existingEvent) {
-      throw new BadRequestException(RECEIVED_ITEMS_WERE_ALREADY_ADDED);
+      throw new BadRequestException(SHIPPED_ITEMS_ALREADY_REMOVED);
     }
   }
 }

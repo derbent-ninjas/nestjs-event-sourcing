@@ -1,0 +1,33 @@
+import {
+  IsAlphanumeric,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { StockItemDto } from '../stockItem.dto';
+
+export class RemoveShippedItemsDto {
+  @IsNotEmpty()
+  @IsUUID()
+  @ApiProperty({ example: 'bfa09088-a4bf-41c2-8d0b-9a5dbb5d9c9e' })
+  requestId!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ example: '251_JN' })
+  stockMonthId!: string;
+
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  @ApiProperty({ example: '1' })
+  gateNumber!: string;
+
+  @IsNotEmpty()
+  @Type(() => StockItemDto)
+  @ValidateNested({ each: true })
+  @ApiProperty({ type: [StockItemDto] })
+  items!: StockItemDto[];
+}

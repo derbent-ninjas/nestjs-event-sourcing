@@ -73,7 +73,7 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
   }
 
   private transformItemsWereShipped(event: ItemsWereShipped) {
-    this.removeItems(event.itemIdsSet);
+    this.removeItems(event.getItemIdsSet());
   }
 
   private addItems(items: StockItem[]) {
