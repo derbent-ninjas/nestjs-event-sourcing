@@ -65,7 +65,7 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
 
   private transformInventoryWasAdjusted(event: InventoryWasAdjusted) {
     this.addItems(event.data.surplusItems);
-    this.removeItems(event.shortageItemsIdsSet);
+    this.removeItems(event.getShortageItemsIdsSet());
   }
 
   private transformItemsWereReceived(event: ItemsWereReceived) {
