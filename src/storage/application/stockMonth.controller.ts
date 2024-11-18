@@ -9,6 +9,9 @@ import { AddReceivedItemsService } from './services/addReceivedItems.service';
 import { RemoveShippedItemsDto } from './dto/removeShippedItems/removeShippedItems.dto';
 import { RemoveShippedItemsResponseDto } from './dto/removeShippedItems/removeShippedItemsResponse.dto';
 import { RemoveShippedItemsService } from './services/removeShippedItems.service';
+import { AdjustInventoryDto } from './dto/adjustInventory/adjustInventory.dto';
+import { AdjustInventoryResponseDto } from './dto/adjustInventory/adjustInventoryResponse.dto';
+import { AdjustInventoryService } from './services/adjustInventory.service';
 
 @Controller('storage/stock-month')
 @ApiTags('storage/stock-month')
@@ -17,6 +20,7 @@ export class StockMonthController {
     private readonly openStockMonthService: OpenStockMonthService,
     private readonly addReceivedItemsService: AddReceivedItemsService,
     private readonly removeShippedItemsService: RemoveShippedItemsService,
+    private readonly adjustInventoryService: AdjustInventoryService,
   ) {}
 
   @Post('/open')
@@ -37,5 +41,12 @@ export class StockMonthController {
     @Body() body: RemoveShippedItemsDto,
   ): Promise<RemoveShippedItemsResponseDto> {
     return this.removeShippedItemsService.runTransaction(body);
+  }
+
+  @Post('/adjust-inventory')
+  async adjustInventory(
+    @Body() body: AdjustInventoryDto,
+  ): Promise<AdjustInventoryResponseDto> {
+    return this.adjustInventoryService.runTransaction(body);
   }
 }
