@@ -1,7 +1,7 @@
 > Development notes, TODO:
 > - implementation 
->   - implement projection
->   - add assertRemovedItemsPresentBeforeIt's being deleted
+>   - implement projections
+>   - add assertRemovedItemsPresent before it's being deleted
 >   - implement cron closing event + reaction
 > - refactoring
 >   - move business logic from services to the aggregate
