@@ -37,8 +37,8 @@ export class OpenStockMonthService {
   ): Promise<OpenStockMonthResponseDto> {
     const now = this.time.now();
     const monthCode = nowToMonthCode(now);
-    const eventId = this.random.uuid();
     const aggregateId = `${dto.locationId}_${monthCode}`;
+    const eventId = this.random.uuid();
 
     await this.assertStockMonthIsNotAlreadyOpened(aggregateId, transaction);
     assertItemIdsAreUnique(dto);

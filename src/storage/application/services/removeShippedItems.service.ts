@@ -13,6 +13,7 @@ import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
 import { SHIPPED_ITEMS_ALREADY_REMOVED } from '../../../infrastructure/shared/errorMessages';
 import { ItemsWereShipped } from '../../domain/aggregates/stockMonth/events/itemsWereShipped';
 import { HydrationService } from './hydration.service';
+import { nowToMonthCode } from '../../../infrastructure/shared/utils/nowToMonthCode';
 
 @Injectable()
 export class RemoveShippedItemsService {
@@ -36,7 +37,9 @@ export class RemoveShippedItemsService {
     dto: RemoveShippedItemsDto,
     transaction: EntityManager,
   ): Promise<RemoveShippedItemsResponseDto> {
-    const aggregateId = dto.stockMonthId;
+    const now = this.time.now();
+    const monthCode = nowToMonthCode(now);
+    const aggregateId = `${dto.locationId}_${monthCode}`;
 
     const aggregate = await this.hydrationService.hydrateAggregateForId(
       aggregateId,
@@ -47,7 +50,6 @@ export class RemoveShippedItemsService {
     await this.assertItemsAreNotAlreadyRemoved(eventId, transaction);
     assertItemIdsAreUnique(dto);
 
-    const now = this.time.now();
     const event = new ItemsWereShipped({
       seqId: PLACEHOLDER_ID,
       eventId,

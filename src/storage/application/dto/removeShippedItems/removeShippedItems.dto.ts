@@ -1,7 +1,6 @@
 import {
   IsAlphanumeric,
   IsNotEmpty,
-  IsString,
   IsUUID,
   ValidateNested,
 } from 'class-validator';
@@ -16,9 +15,9 @@ export class RemoveShippedItemsDto {
   requestId!: string;
 
   @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ example: '251_JN' })
-  stockMonthId!: string;
+  @IsAlphanumeric()
+  @ApiProperty({ example: '1' })
+  locationId!: string;
 
   @IsNotEmpty()
   @IsAlphanumeric()

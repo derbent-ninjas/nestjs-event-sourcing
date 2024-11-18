@@ -13,6 +13,7 @@ import { STORAGE } from '../../../infrastructure/shared/contexts';
 import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
 import { assertItemIdsAreUnique } from '../../domain/aggregates/stockMonth/utils/asserts/assertItemIdsAreUnique';
 import { HydrationService } from './hydration.service';
+import { nowToMonthCode } from '../../../infrastructure/shared/utils/nowToMonthCode';
 
 @Injectable()
 export class AddReceivedItemsService {
@@ -36,7 +37,9 @@ export class AddReceivedItemsService {
     dto: AddReceivedItemsDto,
     transaction: EntityManager,
   ): Promise<AddReceivedItemsResponseDto> {
-    const aggregateId = dto.stockMonthId;
+    const now = this.time.now();
+    const monthCode = nowToMonthCode(now);
+    const aggregateId = `${dto.locationId}_${monthCode}`;
 
     const aggregate = await this.hydrationService.hydrateAggregateForId(
       aggregateId,
@@ -47,7 +50,6 @@ export class AddReceivedItemsService {
     await this.assertItemsAreNotAlreadyAdded(eventId, transaction);
     assertItemIdsAreUnique(dto);
 
-    const now = this.time.now();
     const event = new ItemsWereReceived({
       seqId: PLACEHOLDER_ID,
       eventId,
