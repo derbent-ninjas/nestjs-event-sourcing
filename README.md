@@ -10,7 +10,7 @@
 
 
 ## Event Storming diagram:
-...
+![event diagram](/images/event-diagram.png)
 
 ## Overall structure:
 ...
