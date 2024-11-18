@@ -1,17 +1,22 @@
 import { Event } from '../../../../../infrastructure/shared/utils/eventSourcing/event/event';
 import { StockItem } from '../stockItem';
+import { NoMethods } from '../../../../../infrastructure/shared/types/noMethods';
 
 export class InventoryWasAdjusted extends Event {
   data: InventoryWasAdjustedEventData;
-  shortageItemsIdsSet: Set<string>;
+  private readonly _shortageItemsIdsSet: Set<string>;
 
-  constructor(raw: InventoryWasAdjusted) {
+  constructor(raw: NoMethods<InventoryWasAdjusted>) {
     super(raw);
     this.data = raw.data;
-    this.shortageItemsIdsSet = this.data.shortageItems.reduce(
+    this._shortageItemsIdsSet = this.data.shortageItems.reduce(
       (acc, item) => acc.add(item.id),
       new Set<string>(),
     );
+  }
+
+  getShortageItemsIdsSet(): Set<string> {
+    return this._shortageItemsIdsSet;
   }
 }
 
