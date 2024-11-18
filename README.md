@@ -1,6 +1,10 @@
 > Development notes, TODO:
-> - implement services
-> - implement all endpoints
+> - implementation 
+>   - implement projection
+>   - add assertRemovedItemsPresentBeforeIt's being deleted
+>   - implement cron closing event + reaction
+> - refactoring
+>   - move business logic from services to the aggregate
 
 # Template for Event Sourcing in NestJS:
 
