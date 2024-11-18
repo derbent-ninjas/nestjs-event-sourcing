@@ -9,11 +9,26 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
+  );
+
+  await app.connectMicroservice<MicroserviceOptions>(
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: [
+            `${config.kafka.kafka1Host}:${config.kafka.kafka1ExternalPort}`,
+          ],
+        },
+      },
+    },
+    { inheritAppConfig: true },
   );
 
   const document = new DocumentBuilder()
