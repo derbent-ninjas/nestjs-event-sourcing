@@ -21,6 +21,21 @@ class Config {
         ? { ca: process.env.DB_CA_CERT, rejectUnauthorized: false }
         : false,
   };
+
+  kafka = {
+    kafkaStockEventsTopic:
+      process.env.KAFKA_STOCK_EVENTS_TOPIC ??
+      isRequired('KAFKA_STOCK_EVENTS_TOPIC'),
+    kafka1ExternalPort:
+      process.env.KAFKA1_EXTERNAL_PORT ?? isRequired('KAFKA1_EXTERNAL_PORT'),
+    kafka1Host: process.env.KAFKA1_HOST ?? isRequired('KAFKA1_HOST'),
+  };
+
+  debezium = {
+    protocol: process.env.DEBEZIUM_PROTOCOL ?? isRequired('DEBEZIUM_PROTOCOL'),
+    host: process.env.DEBEZIUM_HOST ?? isRequired('DEBEZIUM_HOST'),
+    port: process.env.DEBEZIUM_PORT ?? isRequired('DEBEZIUM_PORT'),
+  };
 }
 
 export const config = new Config();
