@@ -11,7 +11,6 @@ import { ItemsWereReceived } from '../../domain/aggregates/stockMonth/events/ite
 import { PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
 import { STORAGE } from '../../../infrastructure/shared/contexts';
 import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
-import { assertItemIdsAreUnique } from '../../domain/aggregates/stockMonth/utils/asserts/assertItemIdsAreUnique';
 import { HydrationService } from './hydration.service';
 import { nowToMonthCode } from '../../../infrastructure/shared/utils/nowToMonthCode';
 
@@ -48,7 +47,6 @@ export class AddReceivedItemsService {
 
     const eventId = this.random.uuid(dto.requestId);
     await this.assertItemsAreNotAlreadyAdded(eventId, transaction);
-    assertItemIdsAreUnique(dto);
 
     const event = new ItemsWereReceived({
       seqId: PLACEHOLDER_ID,
@@ -66,6 +64,9 @@ export class AddReceivedItemsService {
         items: dto.items.map((item) => StockItem.fromDto(item, { now })),
       },
     });
+
+    aggregate.apply(event);
+    aggregate.assertItemIdsAreUnique();
 
     await this.repo.save(event, transaction);
 

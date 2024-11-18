@@ -5,7 +5,6 @@ import { DataSource, EntityManager } from 'typeorm';
 import { RandomService } from '../../../infrastructure/random/random.service';
 import { TimeService } from '../../../infrastructure/time/time.service';
 import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
-import { assertItemIdsAreUnique } from '../../domain/aggregates/stockMonth/utils/asserts/assertItemIdsAreUnique';
 import { PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
 import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
 import { STORAGE } from '../../../infrastructure/shared/contexts';
@@ -48,7 +47,6 @@ export class RemoveShippedItemsService {
 
     const eventId = this.random.uuid(dto.requestId);
     await this.assertItemsAreNotAlreadyRemoved(eventId, transaction);
-    assertItemIdsAreUnique(dto);
 
     const event = new ItemsWereShipped({
       seqId: PLACEHOLDER_ID,
@@ -66,6 +64,9 @@ export class RemoveShippedItemsService {
         items: dto.items.map((item) => StockItem.fromDto(item, { now })),
       },
     });
+
+    aggregate.apply(event);
+    aggregate.assertItemIdsAreUnique();
 
     await this.repo.save(event, transaction);
 

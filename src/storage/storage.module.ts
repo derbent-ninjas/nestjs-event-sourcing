@@ -8,6 +8,7 @@ import { DBModule } from '../infrastructure/db/db.module';
 import { AddReceivedItemsService } from './application/services/addReceivedItems.service';
 import { RemoveShippedItemsService } from './application/services/removeShippedItems.service';
 import { HydrationService } from './application/services/hydration.service';
+import { AdjustInventoryService } from './application/services/adjustInventory.service';
 
 @Module({
   imports: [RandomModule, TimeModule, DBModule],
@@ -16,6 +17,7 @@ import { HydrationService } from './application/services/hydration.service';
     OpenStockMonthService,
     AddReceivedItemsService,
     RemoveShippedItemsService,
+    AdjustInventoryService,
     HydrationService,
     StockMonthEventRepository,
   ],

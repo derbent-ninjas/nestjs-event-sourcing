@@ -12,7 +12,6 @@ import { StockMonthWasOpened } from '../../domain/aggregates/stockMonth/events/s
 import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
 import { STORAGE } from '../../../infrastructure/shared/contexts';
 import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
-import { assertItemIdsAreUnique } from '../../domain/aggregates/stockMonth/utils/asserts/assertItemIdsAreUnique';
 
 @Injectable()
 export class OpenStockMonthService {
@@ -41,7 +40,6 @@ export class OpenStockMonthService {
     const eventId = this.random.uuid();
 
     await this.assertStockMonthIsNotAlreadyOpened(aggregateId, transaction);
-    assertItemIdsAreUnique(dto);
 
     const event = new StockMonthWasOpened({
       seqId: PLACEHOLDER_ID,
@@ -60,6 +58,9 @@ export class OpenStockMonthService {
         items: dto.items.map((item) => StockItem.fromDto(item, { now })),
       },
     });
+
+    const aggregate = StockMonth.createByBaseEvent(event);
+    aggregate.assertItemIdsAreUnique();
 
     await this.repo.save(event, transaction);
 

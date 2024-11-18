@@ -15,6 +15,8 @@ import { InventoryWasAdjusted } from './events/inventoryWasAdjusted';
 import { StockMonthWasClosed } from './events/stockMonthWasClosed';
 import { MonthCodeEnum } from './enums/monthCode.enum';
 import { Event } from '../../../../infrastructure/shared/utils/eventSourcing/event/event';
+import { BadRequestException } from '@nestjs/common';
+import { ITEMS_MUST_HAVE_UNIQUE_UUIDS } from '../../../../infrastructure/shared/errorMessages';
 
 type AllEventTypes =
   | StockMonthWasOpened
@@ -37,6 +39,14 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
       locationId: event.data.locationId,
       items: event.data.items,
     });
+  }
+
+  assertItemIdsAreUnique(): void {
+    const itemIds = this.__data.items.map((item) => item.id);
+    const uniqueItemIds = new Set(itemIds);
+    if (uniqueItemIds.size !== itemIds.length) {
+      throw new BadRequestException(ITEMS_MUST_HAVE_UNIQUE_UUIDS);
+    }
   }
 
   transform(event: AllEventTypes): void {

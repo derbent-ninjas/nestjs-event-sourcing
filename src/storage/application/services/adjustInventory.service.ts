@@ -7,7 +7,6 @@ import { HydrationService } from './hydration.service';
 import { AdjustInventoryDto } from '../dto/adjustInventory/adjustInventory.dto';
 import { AdjustInventoryResponseDto } from '../dto/adjustInventory/adjustInventoryResponse.dto';
 import { nowToMonthCode } from '../../../infrastructure/shared/utils/nowToMonthCode';
-import { assertItemIdsAreUnique } from '../../domain/aggregates/stockMonth/utils/asserts/assertItemIdsAreUnique';
 import { INVENTORY_WAS_ALREADY_ADJUSTED } from '../../../infrastructure/shared/errorMessages';
 import { PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
 import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
@@ -48,8 +47,6 @@ export class AdjustInventoryService {
 
     const eventId = this.random.uuid(dto.requestId);
     await this.assertInventoryWasAlreadyAdjusted(eventId, transaction);
-    const items = [...dto.surplusItems, ...dto.shortageItems];
-    assertItemIdsAreUnique({ items });
 
     const event = new InventoryWasAdjusted({
       seqId: PLACEHOLDER_ID,
@@ -67,6 +64,9 @@ export class AdjustInventoryService {
         surplusItems: [],
       },
     });
+
+    aggregate.apply(event);
+    aggregate.assertItemIdsAreUnique();
 
     await this.repo.save(event, transaction);
 
