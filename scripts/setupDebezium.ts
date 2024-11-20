@@ -32,7 +32,7 @@ import { inspect } from 'util';
       'aggregate_id:header:aggregateId',
       'aggregate_name:header:aggregateName',
       'context_name:header:contextName',
-      'causation_id:header:causation_id',
+      'causation_id:header:causationId',
       'correlation_id:header:correlationId',
       'version:header:version',
       'created_at:header:createdAt',
