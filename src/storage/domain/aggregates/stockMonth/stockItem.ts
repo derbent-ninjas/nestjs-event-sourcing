@@ -1,34 +1,80 @@
 import { TemperatureModeEnum } from './enums/temperatureMode.enum';
 import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 import { StockItemDto } from '../../../application/dto/stockItem.dto';
+import {
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class StockItem {
-  id: string;
-  name: string;
-  description: string;
-  isFlammable: boolean;
-  isFragile: boolean;
-  temperatureMode: TemperatureModeEnum;
-  weightGrams: number;
-  createdAt: Date;
-  updatedAt: Date;
-  removedAt: Date | null;
+  @IsNotEmpty()
+  @IsString()
+  id!: string;
 
-  constructor(raw: NoMethods<StockItem>) {
-    this.id = raw.id;
-    this.name = raw.name;
-    this.description = raw.description;
-    this.isFlammable = raw.isFlammable;
-    this.isFragile = raw.isFragile;
-    this.temperatureMode = raw.temperatureMode;
-    this.weightGrams = raw.weightGrams;
-    this.createdAt = raw.createdAt;
-    this.updatedAt = raw.updatedAt;
-    this.removedAt = raw.removedAt;
+  @IsNotEmpty()
+  @IsString()
+  itemName!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  description!: string;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isFlammable!: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isFragile!: boolean;
+
+  @IsNotEmpty()
+  @IsEnum(TemperatureModeEnum)
+  temperatureMode!: TemperatureModeEnum;
+
+  @IsNotEmpty()
+  @IsInt()
+  weightGrams!: number;
+
+  @IsNotEmpty()
+  @Type(() => Date)
+  @IsDate()
+  createdAt!: Date;
+
+  @IsNotEmpty()
+  @Type(() => Date)
+  @IsDate()
+  updatedAt!: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  removedAt!: Date | null;
+
+  static create(raw: NoMethods<StockItem>) {
+    const item = new StockItem();
+
+    item.id = raw.id;
+    item.itemName = raw.itemName;
+    item.description = raw.description;
+    item.isFlammable = raw.isFlammable;
+    item.isFragile = raw.isFragile;
+    item.temperatureMode = raw.temperatureMode;
+    item.weightGrams = raw.weightGrams;
+    item.createdAt = raw.createdAt;
+    item.updatedAt = raw.updatedAt;
+    item.removedAt = raw.removedAt;
+
+    return item;
   }
 
   static fromDto(item: StockItemDto, deps: Deps): StockItem {
-    return new StockItem({
+    return StockItem.create({
       ...item,
       createdAt: deps.now,
       updatedAt: deps.now,
