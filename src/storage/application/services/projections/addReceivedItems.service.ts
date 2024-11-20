@@ -1,18 +1,18 @@
-import { AddReceivedItemsDto } from '../dto/addReceivedItems.ts/addReceivedItems.dto';
-import { AddReceivedItemsResponseDto } from '../dto/addReceivedItems.ts/addReceivedItemsResponse.dto';
+import { AddReceivedItemsDto } from '../../dto/commands/addReceivedItems.ts/addReceivedItems.dto';
+import { AddReceivedItemsResponseDto } from '../../dto/commands/addReceivedItems.ts/addReceivedItemsResponse.dto';
 import { DataSource, EntityManager } from 'typeorm';
-import { RandomService } from '../../../infrastructure/random/random.service';
-import { TimeService } from '../../../infrastructure/time/time.service';
-import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
-import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
+import { RandomService } from '../../../../infrastructure/random/random.service';
+import { TimeService } from '../../../../infrastructure/time/time.service';
+import { StockMonthEventRepository } from '../../../dal/stockMonthEventRepository.service';
+import { StockMonth } from '../../../domain/aggregates/stockMonth/stockMonth';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { RECEIVED_ITEMS_WERE_ALREADY_ADDED } from '../../../infrastructure/shared/errorMessages';
-import { ItemsWereReceived } from '../../domain/aggregates/stockMonth/events/itemsWereReceived';
-import { PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
-import { STORAGE } from '../../../infrastructure/shared/contexts';
-import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
+import { RECEIVED_ITEMS_WERE_ALREADY_ADDED } from '../../../../infrastructure/shared/errorMessages';
+import { ItemsWereReceived } from '../../../domain/aggregates/stockMonth/events/itemsWereReceived';
+import { PLACEHOLDER_ID } from '../../../../infrastructure/shared/constants';
+import { STORAGE } from '../../../../infrastructure/shared/contexts';
+import { StockItem } from '../../../domain/aggregates/stockMonth/stockItem';
 import { HydrationService } from './hydration.service';
-import { nowToMonthCode } from '../../../infrastructure/shared/utils/nowToMonthCode';
+import { nowToMonthCode } from '../../../../infrastructure/shared/utils/nowToMonthCode';
 
 @Injectable()
 export class AddReceivedItemsService {
@@ -60,6 +60,7 @@ export class AddReceivedItemsService {
       version: aggregate.aggregateVersion,
       createdAt: now,
       data: {
+        locationId: dto.locationId,
         gateNumber: dto.gateNumber,
         items: dto.items.map((item) => StockItem.fromDto(item, { now })),
       },

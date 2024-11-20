@@ -1,3 +1,4 @@
+import { StockItemDto } from '../../stockItem.dto';
 import {
   IsAlphanumeric,
   IsNotEmpty,
@@ -6,9 +7,8 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { StockItemDto } from '../stockItem.dto';
 
-export class AdjustInventoryDto {
+export class AddReceivedItemsDto {
   @IsNotEmpty()
   @IsUUID()
   @ApiProperty({ example: 'bfa09088-a4bf-41c2-8d0b-9a5dbb5d9c9e' })
@@ -20,14 +20,13 @@ export class AdjustInventoryDto {
   locationId!: string;
 
   @IsNotEmpty()
-  @Type(() => StockItemDto)
-  @ValidateNested({ each: true })
-  @ApiProperty({ type: [StockItemDto] })
-  surplusItems!: StockItemDto[];
+  @IsAlphanumeric()
+  @ApiProperty({ example: '1' })
+  gateNumber!: string;
 
   @IsNotEmpty()
   @Type(() => StockItemDto)
   @ValidateNested({ each: true })
   @ApiProperty({ type: [StockItemDto] })
-  shortageItems!: StockItemDto[];
+  items!: StockItemDto[];
 }
