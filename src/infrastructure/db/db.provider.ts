@@ -1,6 +1,8 @@
 import { DataSource } from 'typeorm';
 import { config } from '../config/config';
 import { StockMonthEventEntity } from '../../storage/dal/stockMonthEventEntity';
+import { StockProjection } from '../../storage/dal/projections/stockProjection';
+import { StockItemProjection } from '../../storage/dal/projections/stockItem.projection';
 
 export const databaseProviders = [
   {
@@ -13,7 +15,7 @@ export const databaseProviders = [
         username: config.db.username,
         password: config.db.password,
         database: config.db.name,
-        entities: [StockMonthEventEntity],
+        entities: [StockMonthEventEntity, StockProjection, StockItemProjection],
         synchronize: config.db.synchronize,
       });
 
