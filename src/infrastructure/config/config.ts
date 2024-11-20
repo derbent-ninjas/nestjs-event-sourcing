@@ -29,6 +29,8 @@ class Config {
     kafka1ExternalPort:
       process.env.KAFKA1_EXTERNAL_PORT ?? isRequired('KAFKA1_EXTERNAL_PORT'),
     kafka1Host: process.env.KAFKA1_HOST ?? isRequired('KAFKA1_HOST'),
+    consumerGroup:
+      process.env.KAKFA_CONSUMER_GROUP ?? isRequired('KAKFA_CONSUMER_GROUP'),
   };
 
   debezium = {
