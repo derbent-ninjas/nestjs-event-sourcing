@@ -1,18 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { RemoveShippedItemsDto } from '../dto/removeShippedItems/removeShippedItems.dto';
-import { RemoveShippedItemsResponseDto } from '../dto/removeShippedItems/removeShippedItemsResponse.dto';
+import { RemoveShippedItemsDto } from '../../dto/commands/removeShippedItems/removeShippedItems.dto';
+import { RemoveShippedItemsResponseDto } from '../../dto/commands/removeShippedItems/removeShippedItemsResponse.dto';
 import { DataSource, EntityManager } from 'typeorm';
-import { RandomService } from '../../../infrastructure/random/random.service';
-import { TimeService } from '../../../infrastructure/time/time.service';
-import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
-import { PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
-import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
-import { STORAGE } from '../../../infrastructure/shared/contexts';
-import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
-import { SHIPPED_ITEMS_ALREADY_REMOVED } from '../../../infrastructure/shared/errorMessages';
-import { ItemsWereShipped } from '../../domain/aggregates/stockMonth/events/itemsWereShipped';
+import { RandomService } from '../../../../infrastructure/random/random.service';
+import { TimeService } from '../../../../infrastructure/time/time.service';
+import { StockMonthEventRepository } from '../../../dal/stockMonthEventRepository.service';
+import { PLACEHOLDER_ID } from '../../../../infrastructure/shared/constants';
+import { StockMonth } from '../../../domain/aggregates/stockMonth/stockMonth';
+import { STORAGE } from '../../../../infrastructure/shared/contexts';
+import { StockItem } from '../../../domain/aggregates/stockMonth/stockItem';
+import { SHIPPED_ITEMS_ALREADY_REMOVED } from '../../../../infrastructure/shared/errorMessages';
+import { ItemsWereShipped } from '../../../domain/aggregates/stockMonth/events/itemsWereShipped';
 import { HydrationService } from './hydration.service';
-import { nowToMonthCode } from '../../../infrastructure/shared/utils/nowToMonthCode';
+import { nowToMonthCode } from '../../../../infrastructure/shared/utils/nowToMonthCode';
 
 @Injectable()
 export class RemoveShippedItemsService {
@@ -60,6 +60,7 @@ export class RemoveShippedItemsService {
       version: aggregate.aggregateVersion,
       createdAt: now,
       data: {
+        locationId: dto.locationId,
         gateNumber: dto.gateNumber,
         items: dto.items.map((item) => StockItem.fromDto(item, { now })),
       },
