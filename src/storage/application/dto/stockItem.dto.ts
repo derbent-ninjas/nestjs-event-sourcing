@@ -20,7 +20,7 @@ export class StockItemDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ example: 'Computer' })
-  name!: string;
+  itemName!: string;
 
   @IsNotEmpty()
   @IsString()
