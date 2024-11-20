@@ -1,9 +1,11 @@
 import { StockItem } from '../stockItem';
 import { Event } from '../../../../../infrastructure/shared/utils/eventSourcing/event/event';
 import { NoMethods } from '../../../../../infrastructure/shared/types/noMethods';
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class ItemsWereShipped extends Event {
-  data: ItemsWereShippedEventData;
+  data: ItemsWereShippedData;
   private readonly _itemIdsSet: Set<string>;
 
   constructor(raw: NoMethods<ItemsWereShipped>) {
@@ -20,7 +22,17 @@ export class ItemsWereShipped extends Event {
   }
 }
 
-interface ItemsWereShippedEventData {
-  gateNumber: string;
-  items: StockItem[];
+export class ItemsWereShippedData {
+  @IsNotEmpty()
+  @IsString()
+  locationId!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  gateNumber!: string;
+
+  @IsNotEmpty()
+  @Type(() => StockItem)
+  @ValidateNested({ each: true })
+  items!: StockItem[];
 }

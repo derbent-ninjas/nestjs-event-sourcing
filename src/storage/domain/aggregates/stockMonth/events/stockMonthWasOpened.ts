@@ -2,6 +2,8 @@ import { Event } from '../../../../../infrastructure/shared/utils/eventSourcing/
 import { StockItem } from '../stockItem';
 import { MonthCodeEnum } from '../enums/monthCode.enum';
 import * as assert from 'assert';
+import { IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class StockMonthWasOpened extends Event {
   data: StockMonthWasOpenedData;
@@ -12,10 +14,19 @@ export class StockMonthWasOpened extends Event {
   }
 }
 
-interface StockMonthWasOpenedData {
-  month: MonthCodeEnum;
-  locationId: string;
-  items: StockItem[];
+export class StockMonthWasOpenedData {
+  @IsNotEmpty()
+  @IsEnum(MonthCodeEnum)
+  month!: MonthCodeEnum;
+
+  @IsNotEmpty()
+  @IsString()
+  locationId!: string;
+
+  @IsNotEmpty()
+  @Type(() => StockItem)
+  @ValidateNested({ each: true })
+  items!: StockItem[];
 }
 
 export function assertEventIsStockMonthWasOpened(
