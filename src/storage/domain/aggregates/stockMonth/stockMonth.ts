@@ -18,7 +18,7 @@ import { Event } from '../../../../infrastructure/shared/utils/eventSourcing/eve
 import { BadRequestException } from '@nestjs/common';
 import { ITEMS_MUST_HAVE_UNIQUE_UUIDS } from '../../../../infrastructure/shared/errorMessages';
 
-type AllEventTypes =
+export type AllStockMonthEventTypes =
   | StockMonthWasOpened
   | InventoryWasAdjusted
   | ItemsWereReceived
@@ -49,7 +49,7 @@ export class StockMonth extends AggregateRoot<StockMonthData> {
     }
   }
 
-  transform(event: AllEventTypes): void {
+  transform(event: AllStockMonthEventTypes): void {
     if (event instanceof StockMonthWasOpened) {
       this.transformStockMonthWasOpened(event);
     } else if (event instanceof InventoryWasAdjusted) {
