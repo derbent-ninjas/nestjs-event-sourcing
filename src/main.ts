@@ -9,7 +9,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -17,7 +17,7 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  await app.connectMicroservice<MicroserviceOptions>(
+  app.connectMicroservice(
     {
       transport: Transport.KAFKA,
       options: {
@@ -25,11 +25,16 @@ async function bootstrap() {
           brokers: [
             `${config.kafka.kafka1Host}:${config.kafka.kafka1ExternalPort}`,
           ],
+          connectionTimeout: 10000,
+        },
+        consumer: {
+          groupId: config.kafka.consumerGroup,
         },
       },
     },
     { inheritAppConfig: true },
   );
+  await app.startAllMicroservices();
 
   const document = new DocumentBuilder()
     .setTitle('Warehousing (nestjs-event-sourcing)')
