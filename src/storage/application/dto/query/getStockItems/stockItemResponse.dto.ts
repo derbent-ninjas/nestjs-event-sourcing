@@ -4,7 +4,7 @@ import { ApiProperty, OmitType } from '@nestjs/swagger';
 export class StockItemResponseDto extends OmitType(StockItemProjection, [
   'stock',
 ]) {
-  @ApiProperty({ name: '123' })
+  @ApiProperty({ example: '123' })
   locationId!: string;
 
   static from(item: StockItemProjection): StockItemResponseDto {
