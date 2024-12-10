@@ -25,9 +25,15 @@ import { StockProjection } from '../../../dal/projections/stockProjection';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { AllStockMonthEventTypes } from '../../../domain/aggregates/stockMonth/stockMonth';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server } from 'socket.io';
 
 @Injectable()
+@WebSocketGateway()
 export class StockProjectionsService {
+  @WebSocketServer()
+  server!: Server;
+
   constructor(private readonly repo: StockProjectionRepository) {}
 
   async project(
@@ -37,6 +43,7 @@ export class StockProjectionsService {
     const { stock, event } = await this.getEventAndStock(headers, payload);
     const { orphanedItems } = stock.project(event);
     await this.repo.save(stock, orphanedItems);
+    this.server.emit('StockEvent', event);
   }
 
   private async getEventAndStock(
