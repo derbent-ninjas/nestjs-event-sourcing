@@ -78,7 +78,6 @@ export class StockMonthController {
       const message = context.getMessage();
       const headers = await this.validateHeaders(message.headers);
       const value = this.convertBufferToPlain(message.value);
-      console.log(inspect({ headers, value }, { depth: 15 }));
       return this.stockProjectionsService.project(headers, value);
     } catch (error) {
       console.log(inspect({ error }, { depth: 15 }));
