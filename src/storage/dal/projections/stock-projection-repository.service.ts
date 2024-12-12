@@ -25,6 +25,7 @@ export class StockProjectionRepository {
         skip: offset,
         where,
         relations: ['stock'],
+        order: { updatedAt: 'DESC' },
       });
 
     return { items, total };
