@@ -1,30 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { MessageHeadersDto } from '../../dto/messages/messageHeaders.dto';
+import { MessageHeadersDto } from '../dto/messages/messageHeaders.dto';
 import {
   StockMonthWasOpened,
   StockMonthWasOpenedData,
-} from '../../../domain/aggregates/stockMonth/events/stockMonthWasOpened';
+} from '../../domain/aggregates/stockMonth/events/stockMonthWasOpened';
 import {
   InventoryWasAdjusted,
   InventoryWasAdjustedData,
-} from '../../../domain/aggregates/stockMonth/events/inventoryWasAdjusted';
+} from '../../domain/aggregates/stockMonth/events/inventoryWasAdjusted';
 import {
   ItemsWereReceived,
   ItemsWereReceivedData,
-} from '../../../domain/aggregates/stockMonth/events/itemsWereReceived';
+} from '../../domain/aggregates/stockMonth/events/itemsWereReceived';
 import {
   ItemsWereShipped,
   ItemsWereShippedData,
-} from '../../../domain/aggregates/stockMonth/events/itemsWereShipped';
+} from '../../domain/aggregates/stockMonth/events/itemsWereShipped';
 import {
   StockMonthWasClosed,
   StockMonthWasClosedData,
-} from '../../../domain/aggregates/stockMonth/events/stockMonthWasClosed';
-import { StockProjectionRepository } from '../../../dal/projections/stock-projection-repository.service';
-import { StockProjection } from '../../../dal/projections/stockProjection';
+} from '../../domain/aggregates/stockMonth/events/stockMonthWasClosed';
+import { StockProjectionRepository } from '../../dal/projections/stockProjectionRepository.service';
+import { StockProjection } from '../../dal/projections/stockProjection';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { AllStockMonthEventTypes } from '../../../domain/aggregates/stockMonth/stockMonth';
+import { AllStockMonthEventTypes } from '../../domain/aggregates/stockMonth/stockMonth';
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 

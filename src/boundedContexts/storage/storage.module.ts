@@ -1,27 +1,27 @@
 import { Module } from '@nestjs/common';
 import { StockMonthController } from './application/stockMonth.controller';
-import { OpenStockMonthService } from './application/services/projections/openStockMonth.service';
+import { OpenStockMonthCommandHandler } from './application/commandHandlers/openStockMonthCommandHandler.service';
 import { RandomModule } from '../../infrastructure/random/random.module';
 import { TimeModule } from '../../infrastructure/time/time.module';
 import { StockMonthEventRepository } from './dal/stockMonthEventRepository.service';
 import { DBModule } from '../../infrastructure/db/db.module';
-import { AddReceivedItemsService } from './application/services/projections/addReceivedItems.service';
-import { RemoveShippedItemsService } from './application/services/projections/removeShippedItems.service';
-import { HydrationService } from './application/services/projections/hydration.service';
-import { AdjustInventoryService } from './application/services/projections/adjustInventory.service';
-import { GetStockItemsService } from './application/services/query/getStockItems.service';
-import { StockProjectionRepository } from './dal/projections/stock-projection-repository.service';
-import { StockProjectionsService } from './application/services/commands/stockProjections.service';
+import { AddReceivedItemsCommandHandler } from './application/commandHandlers/addReceivedItemsCommandHandler.service';
+import { RemoveShippedItemsCommandHandler } from './application/commandHandlers/removeShippedItemsCommandHandler.service';
+import { StockMonthHydrationService } from './application/hydrations/stockMonthHydration.service';
+import { AdjustInventoryCommandHandler } from './application/commandHandlers/adjustInventoryCommandHandler.service';
+import { GetStockItemsService } from './application/queries/getStockItems.service';
+import { StockProjectionRepository } from './dal/projections/stockProjectionRepository.service';
+import { StockProjectionsService } from './application/projections/stockProjections.service';
 
 @Module({
   imports: [RandomModule, TimeModule, DBModule],
   controllers: [StockMonthController],
   providers: [
-    OpenStockMonthService,
-    AddReceivedItemsService,
-    RemoveShippedItemsService,
-    AdjustInventoryService,
-    HydrationService,
+    OpenStockMonthCommandHandler,
+    AddReceivedItemsCommandHandler,
+    RemoveShippedItemsCommandHandler,
+    AdjustInventoryCommandHandler,
+    StockMonthHydrationService,
     StockMonthEventRepository,
     GetStockItemsService,
     StockProjectionRepository,

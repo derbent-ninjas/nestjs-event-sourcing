@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { GetStockItemsDto } from '../../dto/query/getStockItems/getStockItems.dto';
+import { GetStockItemsDto } from '../dto/query/getStockItems/getStockItems.dto';
 import { FindOptionsWhere, ILike, In } from 'typeorm';
-import { GetStockItemsResponseDto } from '../../dto/query/getStockItems/getStockItemsResponse.dto';
-import { StockItemProjection } from '../../../dal/projections/stockItem.projection';
-import { StockProjectionRepository } from '../../../dal/projections/stock-projection-repository.service';
-import { StockItemResponseDto } from '../../dto/query/getStockItems/stockItemResponse.dto';
+import { GetStockItemsResponseDto } from '../dto/query/getStockItems/getStockItemsResponse.dto';
+import { StockItemProjection } from '../../dal/projections/stockItem.projection';
+import { StockProjectionRepository } from '../../dal/projections/stockProjectionRepository.service';
+import { StockItemResponseDto } from '../dto/query/getStockItems/stockItemResponse.dto';
 
 @Injectable()
 export class GetStockItemsService {

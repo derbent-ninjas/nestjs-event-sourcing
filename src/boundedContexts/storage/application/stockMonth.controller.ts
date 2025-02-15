@@ -2,19 +2,19 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OpenStockMonthDto } from './dto/commands/openStockMonth/openStockMonth.dto';
 import { OpenStockMonthResponseDto } from './dto/commands/openStockMonth/openStockMonthResponse.dto';
-import { OpenStockMonthService } from './services/projections/openStockMonth.service';
+import { OpenStockMonthCommandHandler } from './commandHandlers/openStockMonthCommandHandler.service';
 import { AddReceivedItemsDto } from './dto/commands/addReceivedItems.ts/addReceivedItems.dto';
 import { AddReceivedItemsResponseDto } from './dto/commands/addReceivedItems.ts/addReceivedItemsResponse.dto';
-import { AddReceivedItemsService } from './services/projections/addReceivedItems.service';
+import { AddReceivedItemsCommandHandler } from './commandHandlers/addReceivedItemsCommandHandler.service';
 import { RemoveShippedItemsDto } from './dto/commands/removeShippedItems/removeShippedItems.dto';
 import { RemoveShippedItemsResponseDto } from './dto/commands/removeShippedItems/removeShippedItemsResponse.dto';
-import { RemoveShippedItemsService } from './services/projections/removeShippedItems.service';
+import { RemoveShippedItemsCommandHandler } from './commandHandlers/removeShippedItemsCommandHandler.service';
 import { AdjustInventoryDto } from './dto/commands/adjustInventory/adjustInventory.dto';
 import { AdjustInventoryResponseDto } from './dto/commands/adjustInventory/adjustInventoryResponse.dto';
-import { AdjustInventoryService } from './services/projections/adjustInventory.service';
+import { AdjustInventoryCommandHandler } from './commandHandlers/adjustInventoryCommandHandler.service';
 import { GetStockItemsDto } from './dto/query/getStockItems/getStockItems.dto';
 import { GetStockItemsResponseDto } from './dto/query/getStockItems/getStockItemsResponse.dto';
-import { GetStockItemsService } from './services/query/getStockItems.service';
+import { GetStockItemsService } from './queries/getStockItems.service';
 import { Ctx, EventPattern, KafkaContext } from '@nestjs/microservices';
 import { config } from '../../../infrastructure/config/config';
 import { plainToInstance } from 'class-transformer';
@@ -22,7 +22,7 @@ import { IHeaders } from 'kafkajs';
 import { MessageHeadersDto } from './dto/messages/messageHeaders.dto';
 import { validate } from 'class-validator';
 import { assertIsNotEmpty } from '../../../infrastructure/shared/assertIsNotEmpty';
-import { StockProjectionsService } from './services/commands/stockProjections.service';
+import { StockProjectionsService } from './projections/stockProjections.service';
 import { inspect } from 'util';
 
 @Controller('storage/stock-month')
@@ -30,10 +30,10 @@ import { inspect } from 'util';
 export class StockMonthController {
   constructor(
     private readonly getStockItemsService: GetStockItemsService,
-    private readonly openStockMonthService: OpenStockMonthService,
-    private readonly addReceivedItemsService: AddReceivedItemsService,
-    private readonly removeShippedItemsService: RemoveShippedItemsService,
-    private readonly adjustInventoryService: AdjustInventoryService,
+    private readonly openStockMonthService: OpenStockMonthCommandHandler,
+    private readonly addReceivedItemsService: AddReceivedItemsCommandHandler,
+    private readonly removeShippedItemsService: RemoveShippedItemsCommandHandler,
+    private readonly adjustInventoryService: AdjustInventoryCommandHandler,
     private readonly stockProjectionsService: StockProjectionsService,
   ) {}
 

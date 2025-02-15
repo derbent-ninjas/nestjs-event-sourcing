@@ -1,27 +1,27 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { RemoveShippedItemsDto } from '../../dto/commands/removeShippedItems/removeShippedItems.dto';
-import { RemoveShippedItemsResponseDto } from '../../dto/commands/removeShippedItems/removeShippedItemsResponse.dto';
+import { RemoveShippedItemsDto } from '../dto/commands/removeShippedItems/removeShippedItems.dto';
+import { RemoveShippedItemsResponseDto } from '../dto/commands/removeShippedItems/removeShippedItemsResponse.dto';
 import { DataSource, EntityManager } from 'typeorm';
-import { RandomService } from '../../../../../infrastructure/random/random.service';
-import { TimeService } from '../../../../../infrastructure/time/time.service';
-import { StockMonthEventRepository } from '../../../dal/stockMonthEventRepository.service';
-import { PLACEHOLDER_ID } from '../../../../../infrastructure/shared/constants';
-import { StockMonth } from '../../../domain/aggregates/stockMonth/stockMonth';
-import { STORAGE } from '../../../../../infrastructure/shared/contexts';
-import { StockItem } from '../../../domain/aggregates/stockMonth/stockItem';
-import { SHIPPED_ITEMS_ALREADY_REMOVED } from '../../../../../infrastructure/shared/errorMessages';
-import { ItemsWereShipped } from '../../../domain/aggregates/stockMonth/events/itemsWereShipped';
-import { HydrationService } from './hydration.service';
-import { nowToMonthCode } from '../../../../../infrastructure/shared/utils/nowToMonthCode';
+import { RandomService } from '../../../../infrastructure/random/random.service';
+import { TimeService } from '../../../../infrastructure/time/time.service';
+import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
+import { PLACEHOLDER_ID } from '../../../../infrastructure/shared/constants';
+import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
+import { STORAGE } from '../../../../infrastructure/shared/contexts';
+import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
+import { SHIPPED_ITEMS_ALREADY_REMOVED } from '../../../../infrastructure/shared/errorMessages';
+import { ItemsWereShipped } from '../../domain/aggregates/stockMonth/events/itemsWereShipped';
+import { StockMonthHydrationService } from '../hydrations/stockMonthHydration.service';
+import { nowToMonthCode } from '../../../../infrastructure/shared/utils/nowToMonthCode';
 
 @Injectable()
-export class RemoveShippedItemsService {
+export class RemoveShippedItemsCommandHandler {
   constructor(
     private readonly dataSource: DataSource,
     private readonly random: RandomService,
     private readonly time: TimeService,
     private readonly repo: StockMonthEventRepository,
-    private readonly hydrationService: HydrationService,
+    private readonly hydrationService: StockMonthHydrationService,
   ) {}
 
   async runTransaction(
