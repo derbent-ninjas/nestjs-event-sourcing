@@ -1,8 +1,8 @@
 import { DataSource } from 'typeorm';
 import { config } from '../config/config';
-import { StockMonthEventEntity } from '../../storage/dal/stockMonthEventEntity';
-import { StockProjection } from '../../storage/dal/projections/stockProjection';
-import { StockItemProjection } from '../../storage/dal/projections/stockItem.projection';
+import { StockMonthEventEntity } from '../../boundedContexts/storage/dal/stockMonthEventEntity';
+import { StockProjection } from '../../boundedContexts/storage/dal/projections/stockProjection';
+import { StockItemProjection } from '../../boundedContexts/storage/dal/projections/stockItem.projection';
 
 export const databaseProviders = [
   {

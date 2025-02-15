@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { StorageModule } from './storage/storage.module';
+import { StorageModule } from './boundedContexts/storage/storage.module';
 import { DBModule } from './infrastructure/db/db.module';
 
 @Module({

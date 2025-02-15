@@ -1,4 +1,4 @@
-import { MonthCodeEnum } from '../../../storage/domain/aggregates/stockMonth/enums/monthCode.enum';
+import { MonthCodeEnum } from '../../../boundedContexts/storage/domain/aggregates/stockMonth/enums/monthCode.enum';
 
 export const nowToMonthCode = (now: Date): MonthCodeEnum => {
   const map: Record<number, MonthCodeEnum> = {
