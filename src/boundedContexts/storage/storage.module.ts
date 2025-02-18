@@ -4,7 +4,6 @@ import { OpenStockMonthCommandHandler } from './application/commandHandlers/open
 import { RandomModule } from '../../infrastructure/random/random.module';
 import { TimeModule } from '../../infrastructure/time/time.module';
 import { StockMonthEventRepository } from './dal/stockMonthEventRepository.service';
-import { DBModule } from '../../infrastructure/db/db.module';
 import { AddReceivedItemsCommandHandler } from './application/commandHandlers/addReceivedItemsCommandHandler.service';
 import { RemoveShippedItemsCommandHandler } from './application/commandHandlers/removeShippedItemsCommandHandler.service';
 import { StockMonthHydrationService } from './application/hydrations/stockMonthHydration.service';
@@ -12,9 +11,21 @@ import { AdjustInventoryCommandHandler } from './application/commandHandlers/adj
 import { GetStockItemsService } from './application/queries/getStockItems.service';
 import { StockProjectionRepository } from './dal/projections/stockProjectionRepository.service';
 import { StockProjectionsService } from './application/projections/stockProjections.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { StockMonthEventEntity } from './dal/stockMonthEventEntity';
+import { StockProjection } from './dal/projections/stockProjection';
+import { StockItemProjection } from './dal/projections/stockItem.projection';
 
 @Module({
-  imports: [RandomModule, TimeModule, DBModule],
+  imports: [
+    RandomModule,
+    TimeModule,
+    TypeOrmModule.forFeature([
+      StockMonthEventEntity,
+      StockProjection,
+      StockItemProjection,
+    ]),
+  ],
   controllers: [StockMonthController],
   providers: [
     OpenStockMonthCommandHandler,

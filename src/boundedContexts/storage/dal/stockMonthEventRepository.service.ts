@@ -1,50 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { Event } from '../../../infrastructure/shared/utils/eventSourcing/event/event';
-import { EntityManager } from 'typeorm';
+import { Repository } from 'typeorm';
 import { StockMonthEventEntity } from './stockMonthEventEntity';
 import { StockMonthEventMapper } from './stockMonthEventMapper';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class StockMonthEventRepository {
-  async findManyByAggregateId(
-    aggregateId: string,
-    transaction: EntityManager,
-  ): Promise<Event[]> {
-    const events = await transaction
-      .getRepository(StockMonthEventEntity)
-      .find({ where: { aggregateId } });
+  constructor(
+    @InjectRepository(StockMonthEventEntity)
+    private readonly repo: Repository<StockMonthEventEntity>,
+  ) {}
 
+  async findManyByAggregateId(aggregateId: string): Promise<Event[]> {
+    const events = await this.repo.find({ where: { aggregateId } });
     return events.map((event) => StockMonthEventMapper.toDomain(event));
   }
 
-  async findOneByAggregateId(
-    aggregateId: string,
-    transaction: EntityManager,
-  ): Promise<Event | null> {
-    const event = await transaction
-      .getRepository(StockMonthEventEntity)
-      .findOne({ where: { aggregateId } });
-
+  async findOneByAggregateId(aggregateId: string): Promise<Event | null> {
+    const event = await this.repo.findOne({ where: { aggregateId } });
     return event ? StockMonthEventMapper.toDomain(event) : null;
   }
 
-  async findManyByEventId(
-    eventId: string,
-    transaction: EntityManager,
-  ): Promise<Event[]> {
-    const events = await transaction
-      .getRepository(StockMonthEventEntity)
-      .find({ where: { eventId } });
-
+  async findManyByEventId(eventId: string): Promise<Event[]> {
+    const events = await this.repo.find({ where: { eventId } });
     return events.map((event) => StockMonthEventMapper.toDomain(event));
   }
 
-  async save(
-    event: Event,
-    transaction: EntityManager,
-  ): Promise<StockMonthEventEntity> {
+  async save(event: Event): Promise<StockMonthEventEntity> {
     const entity = StockMonthEventMapper.toEntity(event);
-    const savedEntity = await transaction.save(entity);
+    const savedEntity = await this.repo.save(entity);
     return StockMonthEventMapper.toDomain(savedEntity);
   }
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { OpenStockMonthResponseDto } from '../dto/commands/openStockMonth/openStockMonthResponse.dto';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { OpenStockMonthDto } from '../dto/commands/openStockMonth/openStockMonth.dto';
 import { RandomService } from '../../../../infrastructure/random/random.service';
 import { nowToMonthCode } from '../../../../infrastructure/shared/utils/nowToMonthCode';
@@ -12,6 +12,7 @@ import { StockMonthWasOpened } from '../../domain/aggregates/stockMonth/events/s
 import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
 import { STORAGE } from '../../../../infrastructure/shared/contexts';
 import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class OpenStockMonthCommandHandler {
@@ -22,24 +23,16 @@ export class OpenStockMonthCommandHandler {
     private readonly repo: StockMonthEventRepository,
   ) {}
 
-  async runTransaction(
-    dto: OpenStockMonthDto,
-  ): Promise<OpenStockMonthResponseDto> {
-    return this.dataSource.transaction('SERIALIZABLE', (transaction) => {
-      return this.openStockMonth(dto, transaction);
-    });
-  }
-
+  @Transactional()
   async openStockMonth(
     dto: OpenStockMonthDto,
-    transaction: EntityManager,
   ): Promise<OpenStockMonthResponseDto> {
     const now = this.time.now();
     const monthCode = nowToMonthCode(now);
     const aggregateId = `${dto.locationId}_${monthCode}`;
     const eventId = this.random.uuid();
 
-    await this.assertStockMonthIsNotAlreadyOpened(aggregateId, transaction);
+    await this.assertStockMonthIsNotAlreadyOpened(aggregateId);
 
     const event = new StockMonthWasOpened({
       seqId: PLACEHOLDER_ID,
@@ -62,19 +55,15 @@ export class OpenStockMonthCommandHandler {
     const aggregate = StockMonth.createByBaseEvent(event);
     aggregate.assertItemIdsAreUnique();
 
-    await this.repo.save(event, transaction);
+    await this.repo.save(event);
 
     return OpenStockMonthResponseDto.from(aggregateId);
   }
 
   private async assertStockMonthIsNotAlreadyOpened(
     aggregateId: string,
-    transaction: EntityManager,
   ): Promise<void> {
-    const existingEvent = await this.repo.findOneByAggregateId(
-      aggregateId,
-      transaction,
-    );
+    const existingEvent = await this.repo.findOneByAggregateId(aggregateId);
     if (existingEvent) {
       throw new BadRequestException(STOCK_MONTH_IS_ALREADY_OPENED);
     }

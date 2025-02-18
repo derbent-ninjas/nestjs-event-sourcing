@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { RandomService } from '../../../../infrastructure/random/random.service';
 import { TimeService } from '../../../../infrastructure/time/time.service';
 import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
@@ -25,29 +25,18 @@ export class AdjustInventoryCommandHandler {
     private readonly hydrationService: StockMonthHydrationService,
   ) {}
 
-  async runTransaction(
-    dto: AdjustInventoryDto,
-  ): Promise<AdjustInventoryResponseDto> {
-    return this.dataSource.transaction('SERIALIZABLE', (transaction) => {
-      return this.adjustInventory(dto, transaction);
-    });
-  }
-
   async adjustInventory(
     dto: AdjustInventoryDto,
-    transaction: EntityManager,
   ): Promise<AdjustInventoryResponseDto> {
     const now = this.time.now();
     const monthCode = nowToMonthCode(now);
     const aggregateId = `${dto.locationId}_${monthCode}`;
 
-    const aggregate = await this.hydrationService.hydrateAggregateForId(
-      aggregateId,
-      transaction,
-    );
+    const aggregate =
+      await this.hydrationService.hydrateAggregateForId(aggregateId);
 
     const eventId = this.random.uuid(dto.requestId);
-    await this.assertInventoryWasAlreadyAdjusted(eventId, transaction);
+    await this.assertInventoryWasAlreadyAdjusted(eventId);
 
     const event = new InventoryWasAdjusted({
       seqId: PLACEHOLDER_ID,
@@ -74,19 +63,15 @@ export class AdjustInventoryCommandHandler {
     aggregate.apply(event);
     aggregate.assertItemIdsAreUnique();
 
-    await this.repo.save(event, transaction);
+    await this.repo.save(event);
 
     return AddReceivedItemsResponseDto.from(aggregateId);
   }
 
   private async assertInventoryWasAlreadyAdjusted(
     eventId: string,
-    transaction: EntityManager,
   ): Promise<void> {
-    const [existingEvent] = await this.repo.findManyByEventId(
-      eventId,
-      transaction,
-    );
+    const [existingEvent] = await this.repo.findManyByEventId(eventId);
 
     if (existingEvent) {
       throw new BadRequestException(INVENTORY_WAS_ALREADY_ADJUSTED);

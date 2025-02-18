@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { RemoveShippedItemsDto } from '../dto/commands/removeShippedItems/removeShippedItems.dto';
 import { RemoveShippedItemsResponseDto } from '../dto/commands/removeShippedItems/removeShippedItemsResponse.dto';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { RandomService } from '../../../../infrastructure/random/random.service';
 import { TimeService } from '../../../../infrastructure/time/time.service';
 import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
@@ -13,6 +13,7 @@ import { SHIPPED_ITEMS_ALREADY_REMOVED } from '../../../../infrastructure/shared
 import { ItemsWereShipped } from '../../domain/aggregates/stockMonth/events/itemsWereShipped';
 import { StockMonthHydrationService } from '../hydrations/stockMonthHydration.service';
 import { nowToMonthCode } from '../../../../infrastructure/shared/utils/nowToMonthCode';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class RemoveShippedItemsCommandHandler {
@@ -24,29 +25,19 @@ export class RemoveShippedItemsCommandHandler {
     private readonly hydrationService: StockMonthHydrationService,
   ) {}
 
-  async runTransaction(
-    dto: RemoveShippedItemsDto,
-  ): Promise<RemoveShippedItemsResponseDto> {
-    return this.dataSource.transaction('SERIALIZABLE', (transaction) => {
-      return this.removeShippedItems(dto, transaction);
-    });
-  }
-
+  @Transactional()
   async removeShippedItems(
     dto: RemoveShippedItemsDto,
-    transaction: EntityManager,
   ): Promise<RemoveShippedItemsResponseDto> {
     const now = this.time.now();
     const monthCode = nowToMonthCode(now);
     const aggregateId = `${dto.locationId}_${monthCode}`;
 
-    const aggregate = await this.hydrationService.hydrateAggregateForId(
-      aggregateId,
-      transaction,
-    );
+    const aggregate =
+      await this.hydrationService.hydrateAggregateForId(aggregateId);
 
     const eventId = this.random.uuid(dto.requestId);
-    await this.assertItemsAreNotAlreadyRemoved(eventId, transaction);
+    await this.assertItemsAreNotAlreadyRemoved(eventId);
 
     const event = new ItemsWereShipped({
       seqId: PLACEHOLDER_ID,
@@ -69,19 +60,15 @@ export class RemoveShippedItemsCommandHandler {
     aggregate.apply(event);
     aggregate.assertItemIdsAreUnique();
 
-    await this.repo.save(event, transaction);
+    await this.repo.save(event);
 
     return RemoveShippedItemsResponseDto.from(aggregateId);
   }
 
   private async assertItemsAreNotAlreadyRemoved(
     eventId: string,
-    transaction: EntityManager,
   ): Promise<void> {
-    const [existingEvent] = await this.repo.findManyByEventId(
-      eventId,
-      transaction,
-    );
+    const [existingEvent] = await this.repo.findManyByEventId(eventId);
 
     if (existingEvent) {
       throw new BadRequestException(SHIPPED_ITEMS_ALREADY_REMOVED);

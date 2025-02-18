@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
 import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
 import { STOCK_MONTH_NOT_FOUND } from '../../../../infrastructure/shared/errorMessages';
 import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
@@ -8,14 +7,8 @@ import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.s
 export class StockMonthHydrationService {
   constructor(private readonly repo: StockMonthEventRepository) {}
 
-  public async hydrateAggregateForId(
-    aggregateId: string,
-    transaction: EntityManager,
-  ): Promise<StockMonth> {
-    const stockMonthEvents = await this.repo.findManyByAggregateId(
-      aggregateId,
-      transaction,
-    );
+  public async hydrateAggregateForId(aggregateId: string): Promise<StockMonth> {
+    const stockMonthEvents = await this.repo.findManyByAggregateId(aggregateId);
 
     if (stockMonthEvents.length === 0) {
       throw new BadRequestException(STOCK_MONTH_NOT_FOUND);

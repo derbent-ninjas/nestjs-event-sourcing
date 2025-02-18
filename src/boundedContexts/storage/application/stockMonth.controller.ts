@@ -48,13 +48,13 @@ export class StockMonthController {
   @Post('/open')
   @ApiResponse({ type: OpenStockMonthResponseDto })
   async openStockMonth(@Body() body: OpenStockMonthDto) {
-    return this.openStockMonthService.runTransaction(body);
+    return this.openStockMonthService.openStockMonth(body);
   }
 
   @Post('/add-received-items')
   @ApiResponse({ type: AddReceivedItemsResponseDto })
   async addReceivedItems(@Body() body: AddReceivedItemsDto) {
-    return this.addReceivedItemsService.runTransaction(body);
+    return this.addReceivedItemsService.addReceivedItems(body);
   }
 
   @Post('/remove-shipped-items')
@@ -62,14 +62,14 @@ export class StockMonthController {
   async removeShippedItems(
     @Body() body: RemoveShippedItemsDto,
   ): Promise<RemoveShippedItemsResponseDto> {
-    return this.removeShippedItemsService.runTransaction(body);
+    return this.removeShippedItemsService.removeShippedItems(body);
   }
 
   @Post('/adjust-inventory')
   async adjustInventory(
     @Body() body: AdjustInventoryDto,
   ): Promise<AdjustInventoryResponseDto> {
-    return this.adjustInventoryService.runTransaction(body);
+    return this.adjustInventoryService.adjustInventory(body);
   }
 
   @EventPattern(config.kafka.kafkaStockEventsTopic)
