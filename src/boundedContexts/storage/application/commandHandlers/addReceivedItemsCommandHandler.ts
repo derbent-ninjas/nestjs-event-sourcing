@@ -77,7 +77,11 @@ export class AddReceivedItemsCommandHandler {
       assertIsError(error);
       if (error.message === STOCK_MONTH_NOT_FOUND) {
         const locationId = aggregateId.split('_')[0];
-        const { event } = await this.openStockMonthCommandHandler.openStockMonth({ locationId, items: [] });
+        const { event } =
+          await this.openStockMonthCommandHandler.openStockMonth({
+            locationId,
+            items: [],
+          });
         return StockMonth.createByBaseEvent(event);
       } else {
         throw error;
