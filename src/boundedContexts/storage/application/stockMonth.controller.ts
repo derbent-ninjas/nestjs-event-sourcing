@@ -30,10 +30,10 @@ import { inspect } from 'util';
 export class StockMonthController {
   constructor(
     private readonly getStockItemsService: GetStockItemsService,
-    private readonly openStockMonthService: OpenStockMonthCommandHandler,
-    private readonly addReceivedItemsService: AddReceivedItemsCommandHandler,
-    private readonly removeShippedItemsService: RemoveShippedItemsCommandHandler,
-    private readonly adjustInventoryService: AdjustInventoryCommandHandler,
+    private readonly openStockMonthCommandHandler: OpenStockMonthCommandHandler,
+    private readonly addReceivedItemsCommandHandler: AddReceivedItemsCommandHandler,
+    private readonly removeShippedItemsCommandHandler: RemoveShippedItemsCommandHandler,
+    private readonly adjustInventoryCommandHandler: AdjustInventoryCommandHandler,
     private readonly stockProjectionsService: StockProjectionsService,
   ) {}
 
@@ -48,13 +48,13 @@ export class StockMonthController {
   @Post('/open')
   @ApiResponse({ type: OpenStockMonthResponseDto })
   async openStockMonth(@Body() body: OpenStockMonthDto) {
-    return this.openStockMonthService.openStockMonth(body);
+    return this.openStockMonthCommandHandler.openStockMonth(body);
   }
 
   @Post('/add-received-items')
   @ApiResponse({ type: AddReceivedItemsResponseDto })
   async addReceivedItems(@Body() body: AddReceivedItemsDto) {
-    return this.addReceivedItemsService.addReceivedItems(body);
+    return this.addReceivedItemsCommandHandler.addReceivedItems(body);
   }
 
   @Post('/remove-shipped-items')
@@ -62,14 +62,14 @@ export class StockMonthController {
   async removeShippedItems(
     @Body() body: RemoveShippedItemsDto,
   ): Promise<RemoveShippedItemsResponseDto> {
-    return this.removeShippedItemsService.removeShippedItems(body);
+    return this.removeShippedItemsCommandHandler.removeShippedItems(body);
   }
 
   @Post('/adjust-inventory')
   async adjustInventory(
     @Body() body: AdjustInventoryDto,
   ): Promise<AdjustInventoryResponseDto> {
-    return this.adjustInventoryService.adjustInventory(body);
+    return this.adjustInventoryCommandHandler.adjustInventory(body);
   }
 
   @EventPattern(config.kafka.kafkaStockEventsTopic)

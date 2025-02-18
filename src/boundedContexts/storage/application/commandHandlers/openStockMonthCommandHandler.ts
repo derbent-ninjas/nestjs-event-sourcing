@@ -57,7 +57,7 @@ export class OpenStockMonthCommandHandler {
 
     await this.repo.save(event);
 
-    return OpenStockMonthResponseDto.from(aggregateId);
+    return OpenStockMonthResponseDto.from(event);
   }
 
   private async assertStockMonthIsNotAlreadyOpened(

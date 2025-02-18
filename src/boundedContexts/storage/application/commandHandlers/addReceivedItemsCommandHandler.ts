@@ -6,7 +6,10 @@ import { TimeService } from '../../../../infrastructure/time/time.service';
 import { StockMonthEventRepository } from '../../dal/stockMonthEventRepository.service';
 import { StockMonth } from '../../domain/aggregates/stockMonth/stockMonth';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { RECEIVED_ITEMS_WERE_ALREADY_ADDED } from '../../../../infrastructure/shared/errorMessages';
+import {
+  RECEIVED_ITEMS_WERE_ALREADY_ADDED,
+  STOCK_MONTH_NOT_FOUND,
+} from '../../../../infrastructure/shared/errorMessages';
 import { ItemsWereReceived } from '../../domain/aggregates/stockMonth/events/itemsWereReceived';
 import { PLACEHOLDER_ID } from '../../../../infrastructure/shared/constants';
 import { STORAGE } from '../../../../infrastructure/shared/contexts';
@@ -14,6 +17,8 @@ import { StockItem } from '../../domain/aggregates/stockMonth/stockItem';
 import { StockMonthHydrationService } from '../hydrations/stockMonthHydration.service';
 import { nowToMonthCode } from '../../../../infrastructure/shared/utils/nowToMonthCode';
 import { Transactional } from 'typeorm-transactional';
+import { OpenStockMonthCommandHandler } from './openStockMonthCommandHandler';
+import { assertIsError } from '../../../../infrastructure/shared/asserts/assertIsError';
 
 @Injectable()
 export class AddReceivedItemsCommandHandler {
@@ -23,6 +28,7 @@ export class AddReceivedItemsCommandHandler {
     private readonly time: TimeService,
     private readonly repo: StockMonthEventRepository,
     private readonly hydrationService: StockMonthHydrationService,
+    private readonly openStockMonthCommandHandler: OpenStockMonthCommandHandler,
   ) {}
 
   @Transactional()
@@ -33,8 +39,7 @@ export class AddReceivedItemsCommandHandler {
     const monthCode = nowToMonthCode(now);
     const aggregateId = `${dto.locationId}_${monthCode}`;
 
-    const aggregate =
-      await this.hydrationService.hydrateAggregateForId(aggregateId);
+    const aggregate = await this.getOrOpenStockMonth(aggregateId);
 
     const eventId = this.random.uuid(dto.requestId);
     await this.assertItemsAreNotAlreadyAdded(eventId);
@@ -63,6 +68,21 @@ export class AddReceivedItemsCommandHandler {
     await this.repo.save(event);
 
     return AddReceivedItemsResponseDto.from(aggregateId);
+  }
+
+  private async getOrOpenStockMonth(aggregateId: string): Promise<StockMonth> {
+    try {
+      return await this.hydrationService.hydrateAggregateForId(aggregateId);
+    } catch (error) {
+      assertIsError(error);
+      if (error.message === STOCK_MONTH_NOT_FOUND) {
+        const locationId = aggregateId.split('_')[0];
+        const { event } = await this.openStockMonthCommandHandler.openStockMonth({ locationId, items: [] });
+        return StockMonth.createByBaseEvent(event);
+      } else {
+        throw error;
+      }
+    }
   }
 
   private async assertItemsAreNotAlreadyAdded(eventId: string): Promise<void> {
