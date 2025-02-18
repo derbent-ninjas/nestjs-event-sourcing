@@ -15,6 +15,7 @@ export class GetStockItemsService {
   ): Promise<GetStockItemsResponseDto> {
     const where = this.createWhereByFilter(dto);
 
+    console.log({ dto, where });
     const { items, total } = await this.projectionRepo.find({
       limit: dto.limit,
       offset: dto.offset,
@@ -30,7 +31,7 @@ export class GetStockItemsService {
   private createWhereByFilter({ filter }: Pick<GetStockItemsDto, 'filter'>) {
     const where: FindOptionsWhere<StockItemProjection> = {};
 
-    if (filter.locationId) {
+    if (filter.locationId && filter.locationId.length > 0) {
       where.stock = {
         locationId: In(filter.locationId),
       };
@@ -40,19 +41,15 @@ export class GetStockItemsService {
       where.itemName = ILike(`%${filter.itemName}%`);
     }
 
-    if (filter.isFlammable) {
+    if (filter.isFlammable && filter.isFlammable.length > 0) {
       where.isFlammable = In(filter.isFlammable);
     }
 
-    if (filter.isFragile) {
+    if (filter.isFragile && filter.isFragile.length > 0) {
       where.isFragile = In(filter.isFragile);
     }
 
-    if (filter.temperatureMode) {
-      where.temperatureMode = In(filter.temperatureMode);
-    }
-
-    if (filter.temperatureMode) {
+    if (filter.temperatureMode && filter.temperatureMode.length > 0) {
       where.temperatureMode = In(filter.temperatureMode);
     }
 
@@ -65,7 +62,7 @@ export class GetStockItemsService {
     //   where.weightGrams = LessThanOrEqual(filter.minWeight);
     // }
 
-    if (filter.inventoryAdjustment) {
+    if (filter.inventoryAdjustment && filter.inventoryAdjustment.length > 0) {
       where.inventoryAdjustment = In(filter.inventoryAdjustment);
     }
 

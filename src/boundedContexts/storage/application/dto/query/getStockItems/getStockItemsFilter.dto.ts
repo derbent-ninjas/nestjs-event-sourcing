@@ -1,5 +1,4 @@
 import {
-  IsAlphanumeric,
   IsArray,
   IsBoolean,
   IsEnum,
@@ -19,7 +18,7 @@ export class GetStockItemsFilterDto {
   locationId?: string[];
 
   @IsOptional()
-  @IsAlphanumeric()
+  @IsString()
   @ApiProperty()
   itemName?: string;
 
