@@ -10,8 +10,10 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { Transport } from '@nestjs/microservices';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 async function bootstrap() {
+  initializeTransactionalContext();
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
