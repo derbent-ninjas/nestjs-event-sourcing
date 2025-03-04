@@ -29,9 +29,7 @@ import { config } from '../src/infrastructure/config/config';
   function createKafka(): Kafka {
     return new Kafka({
       clientId: 'acceptance-tests',
-      brokers: [
-        `${config.kafka.kafka1Host}:${config.kafka.kafka1ExternalPort}`,
-      ],
+      brokers: [`${config.kafka.kafka1HostExternal}:29093`],
     });
   }
 })();

@@ -23,7 +23,7 @@ import { inspect } from 'util';
   }
 
   function createBody(): object {
-    const { name, username, password, host, port } = config.db;
+    const { name, username, password } = config.db;
 
     const headerMappings = [
       'seq_id:header:messageId',
@@ -44,9 +44,9 @@ import { inspect } from 'util';
         'connector.class': 'io.debezium.connector.postgresql.PostgresConnector',
         'plugin.name': 'pgoutput',
         'tasks.max': '1',
-        'database.hostname': host,
-        'database.server.name': host,
-        'database.port': port,
+        'database.hostname': 'db',
+        'database.server.name': 'db',
+        'database.port': 5432,
         'database.user': username,
         'database.password': password,
         'database.dbname': name,

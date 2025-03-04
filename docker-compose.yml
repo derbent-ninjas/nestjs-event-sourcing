@@ -52,7 +52,7 @@ services:
     depends_on:
       - zoo1
     healthcheck:
-      test: nc -z ${DOCKER_HOST_IP} ${KAFKA1_EXTERNAL_PORT} || exit -1
+      test: nc -z kafka1 ${KAFKA1_INTERNAL_PORT} || exit -1
       interval: 5s
       timeout: 10s
       retries: 10
@@ -68,7 +68,7 @@ services:
     ports:
       - ${KAFKA_UI_PORT}:8080
     environment:
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${DOCKER_HOST_IP}:${KAFKA1_EXTERNAL_PORT}
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:${KAFKA1_INTERNAL_PORT}
       AUTH_TYPE: "DISABLED"
       DYNAMIC_CONFIG_ENABLED: 'true'
 
@@ -84,7 +84,7 @@ services:
     ports:
       - ${DEBEZIUM_PORT}:8083
     environment:
-      BOOTSTRAP_SERVERS: ${DOCKER_HOST_IP}:${KAFKA1_EXTERNAL_PORT}
+      BOOTSTRAP_SERVERS: kafka1:${KAFKA1_INTERNAL_PORT}
       GROUP_ID: 1
       CONFIG_STORAGE_TOPIC: connect_configs
       STATUS_STORAGE_TOPIC: connect_statuses

@@ -26,9 +26,8 @@ class Config {
     kafkaStockEventsTopic:
       process.env.KAFKA_STOCK_EVENTS_TOPIC ??
       isRequired('KAFKA_STOCK_EVENTS_TOPIC'),
-    kafka1ExternalPort:
-      process.env.KAFKA1_EXTERNAL_PORT ?? isRequired('KAFKA1_EXTERNAL_PORT'),
-    kafka1Host: process.env.KAFKA1_HOST ?? isRequired('KAFKA1_HOST'),
+    kafka1DockerPort: process.env.KAFKA1_DOCKER_PORT ?? isRequired('KAFKA1_DOCKER_PORT'),
+    kafka1HostExternal: process.env.KAFKA1_HOST_EXTERNAL ?? isRequired('KAFKA1_HOST_EXTERNAL'),
     consumerGroup:
       process.env.KAKFA_CONSUMER_GROUP ?? isRequired('KAKFA_CONSUMER_GROUP'),
   };
