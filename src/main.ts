@@ -25,7 +25,7 @@ async function bootstrap() {
       options: {
         client: {
           brokers: [
-            `${config.kafka.kafka1HostExternal}:${config.kafka.kafka1DockerPort}`,
+            `${config.kafka.kafka1HostExternal}:${config.kafka.kafka1ExternalPort}`,
           ],
           connectionTimeout: 10000,
         },
