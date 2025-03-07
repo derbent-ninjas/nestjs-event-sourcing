@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OpenStockMonthDto } from './dto/commands/openStockMonth/openStockMonth.dto';
 import { OpenStockMonthResponseDto } from './dto/commands/openStockMonth/openStockMonthResponse.dto';
@@ -24,6 +24,8 @@ import { validate } from 'class-validator';
 import { assertIsNotEmpty } from '../../../infrastructure/shared/assertIsNotEmpty';
 import { StockProjectionsService } from './projections/stockProjections.service';
 import { inspect } from 'util';
+import { INFLUXDB_TOKEN } from '../../../infrastructure/influxDB/influxDB.module';
+import { InfluxDB, Point } from '@influxdata/influxdb-client';
 
 @Controller('storage/stock-month')
 @ApiTags('storage/stock-month')
@@ -35,6 +37,8 @@ export class StockMonthController {
     private readonly removeShippedItemsCommandHandler: RemoveShippedItemsCommandHandler,
     private readonly adjustInventoryCommandHandler: AdjustInventoryCommandHandler,
     private readonly stockProjectionsService: StockProjectionsService,
+    @Inject(INFLUXDB_TOKEN)
+    private readonly influx: InfluxDB,
   ) {}
 
   @Post('/get-stock-items')
@@ -72,15 +76,70 @@ export class StockMonthController {
     return this.adjustInventoryCommandHandler.adjustInventory(body);
   }
 
+  @Post('influxdb-read')
+  async read(): Promise<any> {
+    const queryApi = this.influx.getQueryApi('my-org')
+
+    const fluxQuery = `
+      from(bucket: "my-bucket")
+        |> range(start: -1h)
+        |> filter(fn: (r) => r._measurement == "temperature")
+    `;
+
+    return await queryData();
+
+    function queryData(): Promise<any> {
+      return new Promise((resolve, reject) => {
+        const results: any[] = []
+        queryApi.queryRows(fluxQuery, {
+          next(row, tableMeta) {
+            const o = tableMeta.toObject(row)
+            results.push(o)
+          },
+          error(error) {
+            reject(error)
+          },
+          complete() {
+            resolve(results)
+          },
+        })
+      })
+    }
+  }
+
+  @Post('influxdb-write')
+  async write(): Promise<any> {
+    const writeApi = this.influx.getWriteApi('my-org', 'my-bucket', 'ms')
+
+    const point = new Point('temperature')
+      .tag('location', 'west')
+      .floatField('value', 65.0)
+
+    writeApi.writePoint(point);
+    await writeApi.flush();
+  }
+
   @EventPattern(config.kafka.kafkaStockEventsTopic)
   async projectStock(@Ctx() context: KafkaContext): Promise<void> {
     try {
       const message = context.getMessage();
       const headers = await this.validateHeaders(message.headers);
       const value = this.convertBufferToPlain(message.value);
-      return this.stockProjectionsService.project(headers, value);
-    } catch (error) {
-      console.log(inspect({ error }, { depth: 15 }));
+
+      try {
+        await this.stockProjectionsService.project(headers, value);
+      } catch(e) {
+        console.log(inspect({ e }, { depth: 15 }));
+      }
+
+      try {
+        // TODO: acutalize influxDB stats
+      } catch (e) {
+        console.log(inspect({ e }, { depth: 15 }));
+      }
+
+    } catch (e) {
+      console.log(inspect({ e }, { depth: 15 }));
     }
   }
 
