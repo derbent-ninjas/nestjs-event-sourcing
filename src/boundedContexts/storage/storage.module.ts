@@ -15,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StockMonthEventEntity } from './dal/stockMonthEventEntity';
 import { StockProjection } from './dal/projections/stockProjection';
 import { StockItemProjection } from './dal/projections/stockItem.projection';
+import { InfluxDBModule } from '../../infrastructure/influxDB/influxDB.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { StockItemProjection } from './dal/projections/stockItem.projection';
       StockProjection,
       StockItemProjection,
     ]),
+    InfluxDBModule,
   ],
   controllers: [StockMonthController],
   providers: [
