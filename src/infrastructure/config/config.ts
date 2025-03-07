@@ -38,6 +38,13 @@ class Config {
     host: process.env.DEBEZIUM_HOST ?? isRequired('DEBEZIUM_HOST'),
     port: process.env.DEBEZIUM_PORT ?? isRequired('DEBEZIUM_PORT'),
   };
+
+  influxDB = {
+    url: process.env.INFLUXDB_URL ?? isRequired('INFLUXDB_URL'),
+    token: process.env.INFLUXDB_TOKEN ?? isRequired('INFLUXDB_TOKEN'),
+    username: process.env.INFLUXDB_USERNAME ?? isRequired('INFLUXDB_USERNAME'),
+    password: process.env.INFLUXDB_PASSWORD ?? isRequired('INFLUXDB_PASSWORD'),
+  }
 }
 
 export const config = new Config();
