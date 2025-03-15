@@ -16,6 +16,8 @@ import { StockMonthEventEntity } from './dal/stockMonthEventEntity';
 import { StockProjection } from './dal/projections/stockProjection';
 import { StockItemProjection } from './dal/projections/stockItem.projection';
 import { InfluxDBModule } from '../../infrastructure/influxDB/influxDB.module';
+import { StatisticsProjectionsService } from './application/projections/statisticsProjections.service';
+import { StatisticsReadService } from './application/queries/statisticsRead.service';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { InfluxDBModule } from '../../infrastructure/influxDB/influxDB.module';
     GetStockItemsService,
     StockProjectionRepository,
     StockProjectionsService,
+    StatisticsProjectionsService,
+    StatisticsReadService,
   ],
 })
 export class StorageModule {}

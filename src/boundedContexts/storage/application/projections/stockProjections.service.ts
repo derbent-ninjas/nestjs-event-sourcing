@@ -46,7 +46,7 @@ export class StockProjectionsService {
     this.server.emit('StockEvent', event);
   }
 
-  private async getEventAndStock(
+  public async getEventAndStock(
     headers: MessageHeadersDto,
     payload: Record<string, any>,
   ): Promise<{ event: AllStockMonthEventTypes; stock: StockProjection }> {
