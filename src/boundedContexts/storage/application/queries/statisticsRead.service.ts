@@ -22,7 +22,7 @@ export class StatisticsReadService {
 
     const fluxQuery = `
       from(bucket: "my-bucket")
-        |> range(start: -1h)
+        |> range(start: -1w)
         |> filter(fn: (r) => r._measurement == "received-products-count")
         |> aggregateWindow(every: ${dto.timeWindow}, fn: sum, createEmpty: false)
         |> yield(name: "sum")
