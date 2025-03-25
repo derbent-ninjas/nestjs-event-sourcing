@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { StockItemProjection } from './stockItem.projection';
-import { DataSource, FindOptionsWhere } from 'typeorm';
+import { DataSource, FindOptionsWhere, In } from 'typeorm';
 import { StockProjection } from './stockProjection';
 
 interface FindParams {
@@ -46,7 +46,7 @@ export class StockProjectionRepository {
     const [savedStock] = await Promise.all([
       this.dataSource.getRepository(StockProjection).save(stock),
       orphanedItems
-        ? this.dataSource.getRepository(StockItemProjection).save(orphanedItems)
+        ? this.dataSource.getRepository(StockItemProjection).delete({ id: In(orphanedItems.map(item => item.id)) })
         : null,
     ]);
 
