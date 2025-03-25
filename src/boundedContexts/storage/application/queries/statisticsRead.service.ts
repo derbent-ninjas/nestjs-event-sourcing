@@ -18,36 +18,50 @@ export class StatisticsReadService {
   constructor(@Inject(INFLUXDB_TOKEN) private readonly influx: InfluxDB) {}
 
   async getReceivedProductsStatistics(dto: GetReceivedProductsStatisticsDto): Promise<GetReceivedProductsStatisticsResponseDto> {
-    const queryApi = this.influx.getQueryApi('my-org')
-
     const fluxQuery = `
       from(bucket: "my-bucket")
-        |> range(start: -1w)
+        |> range(start: -1y)
         |> filter(fn: (r) => r._measurement == "received-products-count")
         |> aggregateWindow(every: ${dto.timeWindow}, fn: sum, createEmpty: false)
         |> yield(name: "sum")
     `;
 
-    const points = await queryData();
+    const points = await this.queryData(fluxQuery);
 
     return GetReceivedProductsStatisticsResponseDto.fromPoints(points);
+  }
 
-    function queryData(): Promise<QueriedPoint[]> {
-      return new Promise((resolve, reject) => {
-        const results: any[] = []
-        queryApi.queryRows(fluxQuery, {
-          next(row, tableMeta) {
-            const o = tableMeta.toObject(row)
-            results.push(o)
-          },
-          error(error) {
-            reject(error)
-          },
-          complete() {
-            resolve(results)
-          },
-        })
+  async getShippedProductsStatistics(dto: GetReceivedProductsStatisticsDto): Promise<GetReceivedProductsStatisticsResponseDto> {
+    const fluxQuery = `
+      from(bucket: "my-bucket")
+        |> range(start: -1y)
+        |> filter(fn: (r) => r._measurement == "shipped-products-count")
+        |> aggregateWindow(every: ${dto.timeWindow}, fn: sum, createEmpty: false)
+        |> yield(name: "sum")
+    `;
+
+    const points = await this.queryData(fluxQuery);
+
+    return GetReceivedProductsStatisticsResponseDto.fromPoints(points);
+  }
+
+  private queryData(fluxQuery: string): Promise<QueriedPoint[]> {
+    const queryApi = this.influx.getQueryApi('my-org')
+
+    return new Promise((resolve, reject) => {
+      const results: any[] = []
+      queryApi.queryRows(fluxQuery, {
+        next(row, tableMeta) {
+          const o = tableMeta.toObject(row)
+          results.push(o)
+        },
+        error(error) {
+          reject(error)
+        },
+        complete() {
+          resolve(results)
+        },
       })
-    }
+    })
   }
 }

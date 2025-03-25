@@ -86,8 +86,13 @@ export class StockMonthController {
   }
 
   @Post('statistics/products-received-count')
-  async read(@Body() dto: GetReceivedProductsStatisticsDto): Promise<GetReceivedProductsStatisticsResponseDto> {
+  async getReceivedProductsStatistics(@Body() dto: GetReceivedProductsStatisticsDto): Promise<GetReceivedProductsStatisticsResponseDto> {
     return this.statisticsReadService.getReceivedProductsStatistics(dto);
+  }
+
+  @Post('statistics/shipped-received-count')
+  async getShippedProductsStatistics(@Body() dto: GetReceivedProductsStatisticsDto): Promise<GetReceivedProductsStatisticsResponseDto> {
+    return this.statisticsReadService.getShippedProductsStatistics(dto);
   }
 
   @EventPattern(config.kafka.kafkaStockEventsTopic)
