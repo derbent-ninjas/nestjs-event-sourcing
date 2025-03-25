@@ -90,7 +90,7 @@ export class StockMonthController {
     return this.statisticsReadService.getReceivedProductsStatistics(dto);
   }
 
-  @Post('statistics/shipped-received-count')
+  @Post('statistics/shipped-products-count')
   async getShippedProductsStatistics(@Body() dto: GetReceivedProductsStatisticsDto): Promise<GetReceivedProductsStatisticsResponseDto> {
     return this.statisticsReadService.getShippedProductsStatistics(dto);
   }
