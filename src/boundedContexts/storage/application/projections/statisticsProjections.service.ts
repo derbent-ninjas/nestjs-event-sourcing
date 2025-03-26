@@ -39,19 +39,29 @@ export class StatisticsProjectionsService {
     } else if (event instanceof InventoryWasAdjusted) {
       return []
     } else if (event instanceof ItemsWereReceived) {
-      const receivedProductsCountPoint = new Point('received-products-count')
-        .tag('locationId', event.data.locationId)
-        .tag('gateNumber', event.data.gateNumber)
-        .floatField('value', event.data.items.length)
+      const receivedProductsCountPoints = event.data.items.map(item => {
+        return new Point('received-products-count')
+          .tag('locationId', event.data.locationId)
+          .tag('gateNumber', event.data.gateNumber)
+          .tag('isFlammable', String(item.isFlammable))
+          .tag('isFragile', String(item.isFragile))
+          .tag('temperatureMode', item.temperatureMode)
+          .floatField('value', 1);
+      })
 
-      return [receivedProductsCountPoint];
+      return [...receivedProductsCountPoints];
     } else if (event instanceof ItemsWereShipped) {
-      const shippedProductsCountPoint = new Point('shipped-products-count')
-        .tag('locationId', event.data.locationId)
-        .tag('gateNumber', event.data.gateNumber)
-        .floatField('value', event.data.items.length)
+      const shippedProductsCountPoints = event.data.items.map(item => {
+        return new Point('shipped-products-count')
+          .tag('locationId', event.data.locationId)
+          .tag('gateNumber', event.data.gateNumber)
+          .tag('isFlammable', String(item.isFlammable))
+          .tag('isFragile', String(item.isFragile))
+          .tag('temperatureMode', item.temperatureMode)
+          .floatField('value', 1);
+      })
 
-      return [shippedProductsCountPoint];
+      return [...shippedProductsCountPoints];
     } else if (event instanceof StockMonthWasClosed) {
       return []
     } else {
