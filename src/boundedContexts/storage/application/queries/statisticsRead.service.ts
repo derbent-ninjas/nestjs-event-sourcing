@@ -3,14 +3,19 @@ import { INFLUXDB_TOKEN } from '../../../../infrastructure/influxDB/influxDB.mod
 import { InfluxDB } from '@influxdata/influxdb-client';
 import { GetReceivedProductsStatisticsDto } from '../dto/query/statistics/getReceivedProductsStatistics.dto';
 import {
-  GetReceivedProductsStatisticsResponseDto
+  GetReceivedProductsStatisticsResponseDto,
 } from '../dto/query/statistics/getReceivedProductsStatisticsResponse.dto';
+import {
+  GetReceivedProductsByTemperatureModeResponseDto,
+} from '../dto/query/statistics/getReceivedProductsByTemperatureModeResponse.dto';
+import { TemperatureModeEnum } from '../../domain/aggregates/stockMonth/enums/temperatureMode.enum';
 
 export interface QueriedPoint {
   _time: string;
   _value: number
   gateNumber: string;
   locationId: string;
+  temperatureMode: TemperatureModeEnum;
 }
 
 @Injectable()
@@ -29,6 +34,21 @@ export class StatisticsReadService {
     const points = await this.queryData(fluxQuery);
 
     return GetReceivedProductsStatisticsResponseDto.fromPoints(points);
+  }
+
+  async getAndCountProductsByTemperatureMode(): Promise<GetReceivedProductsByTemperatureModeResponseDto> {
+    const query = `
+      from(bucket: "my-bucket")
+        |> range(start: 0)
+        |> filter(fn: (r) => r._measurement == "received-products-count")
+        |> group(columns: ["temperatureMode"])
+        |> sum()
+        |> yield(name: "total")
+    `;
+
+    const points = await this.queryData(query)
+
+    return GetReceivedProductsByTemperatureModeResponseDto.from(points);
   }
 
   async getShippedProductsStatistics(dto: GetReceivedProductsStatisticsDto): Promise<GetReceivedProductsStatisticsResponseDto> {
