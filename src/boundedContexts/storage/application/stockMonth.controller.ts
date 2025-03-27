@@ -30,6 +30,7 @@ import { GetReceivedProductsStatisticsDto } from './dto/query/statistics/getRece
 import {
   GetReceivedProductsStatisticsResponseDto
 } from './dto/query/statistics/getReceivedProductsStatisticsResponse.dto';
+import { GetReceivedProductsByTagDto } from './dto/query/statistics/getReceivedProductsByTag.dto';
 
 interface GetHeadersAndValueReturnType {
   headers: MessageHeadersDto;
@@ -90,9 +91,9 @@ export class StockMonthController {
     return this.statisticsReadService.getReceivedProductsStatistics(dto);
   }
 
-  @Post('statistics/products-received-count-by-temperatureMode')
-  async getAndCountProductsByTemperatureMode(): Promise<any> {
-    return this.statisticsReadService.getAndCountProductsByTemperatureMode();
+  @Post('statistics/products-received-count-by-tags')
+  async getAndCountProductsByTag(@Body() dto: GetReceivedProductsByTagDto): Promise<any> {
+    return this.statisticsReadService.getReceivedProductsByProductsByTag(dto);
   }
 
   @Post('statistics/shipped-products-count')

@@ -6,16 +6,20 @@ import {
   GetReceivedProductsStatisticsResponseDto,
 } from '../dto/query/statistics/getReceivedProductsStatisticsResponse.dto';
 import {
-  GetReceivedProductsByTemperatureModeResponseDto,
-} from '../dto/query/statistics/getReceivedProductsByTemperatureModeResponse.dto';
+  GetReceivedProductsByTagsResponseDto,
+} from '../dto/query/statistics/getReceivedProductsByTagsResponseDto';
 import { TemperatureModeEnum } from '../../domain/aggregates/stockMonth/enums/temperatureMode.enum';
+import { GetReceivedProductsByTagDto } from '../dto/query/statistics/getReceivedProductsByTag.dto';
+import { TagTypesEnum } from '../shared/enums/tagTypes.enum';
 
 export interface QueriedPoint {
   _time: string;
   _value: number
   gateNumber: string;
   locationId: string;
-  temperatureMode: TemperatureModeEnum;
+  [TagTypesEnum.temperatureMode]: TemperatureModeEnum;
+  [TagTypesEnum.isFlammable]: 'true' | 'false';
+  [TagTypesEnum.isFragile]: 'true' | 'false';
 }
 
 @Injectable()
@@ -36,19 +40,19 @@ export class StatisticsReadService {
     return GetReceivedProductsStatisticsResponseDto.fromPoints(points);
   }
 
-  async getAndCountProductsByTemperatureMode(): Promise<GetReceivedProductsByTemperatureModeResponseDto> {
+  async getReceivedProductsByProductsByTag(dto: GetReceivedProductsByTagDto): Promise<GetReceivedProductsByTagsResponseDto> {
     const query = `
       from(bucket: "my-bucket")
         |> range(start: 0)
         |> filter(fn: (r) => r._measurement == "received-products-count")
-        |> group(columns: ["temperatureMode"])
+        |> group(columns: ["${dto.tag}"])
         |> sum()
         |> yield(name: "total")
     `;
 
     const points = await this.queryData(query)
 
-    return GetReceivedProductsByTemperatureModeResponseDto.from(points);
+    return GetReceivedProductsByTagsResponseDto.from(dto.tag, points);
   }
 
   async getShippedProductsStatistics(dto: GetReceivedProductsStatisticsDto): Promise<GetReceivedProductsStatisticsResponseDto> {

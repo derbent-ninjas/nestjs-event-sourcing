@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { QueriedPoint } from '../../../queries/statisticsRead.service';
+import { TagTypesEnum } from '../../../shared/enums/tagTypes.enum';
 
 class PieChartPoint {
   @ApiProperty()
@@ -7,21 +8,20 @@ class PieChartPoint {
 
   @ApiProperty()
   value!: number;
-
 }
 
-export class GetReceivedProductsByTemperatureModeResponseDto {
+export class GetReceivedProductsByTagsResponseDto {
   @ApiProperty({ type: [PieChartPoint] })
   graphData!: PieChartPoint[];
 
   @ApiProperty()
   total!: number;
 
-  static from(queriedPoints: QueriedPoint[]): GetReceivedProductsByTemperatureModeResponseDto {
-    const dto = new GetReceivedProductsByTemperatureModeResponseDto();
+  static from(tag: TagTypesEnum, queriedPoints: QueriedPoint[]): GetReceivedProductsByTagsResponseDto {
+    const dto = new GetReceivedProductsByTagsResponseDto();
 
     dto.graphData = queriedPoints.map(p => ({
-      label: p.temperatureMode,
+      label: p[tag],
       value: p._value,
     }))
     dto.total = queriedPoints.reduce((acc, el) => acc + el._value, 0);
