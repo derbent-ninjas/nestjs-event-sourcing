@@ -31,6 +31,7 @@ export class StatisticsReadService {
       from(bucket: "my-bucket")
         |> range(start: -1y)
         |> filter(fn: (r) => r._measurement == "received-products-count")
+        |> group(columns: [])
         |> aggregateWindow(every: ${dto.timeWindow}, fn: sum, createEmpty: false)
         |> yield(name: "sum")
     `;
@@ -60,6 +61,7 @@ export class StatisticsReadService {
       from(bucket: "my-bucket")
         |> range(start: -1y)
         |> filter(fn: (r) => r._measurement == "shipped-products-count")
+        |> group(columns: [])
         |> aggregateWindow(every: ${dto.timeWindow}, fn: sum, createEmpty: false)
         |> yield(name: "sum")
     `;
