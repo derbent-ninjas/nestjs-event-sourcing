@@ -15,7 +15,6 @@ export class GetStockItemsService {
   ): Promise<GetStockItemsResponseDto> {
     const where = this.createWhereByFilter(dto);
 
-    console.log({ dto, where });
     const { items, total } = await this.projectionRepo.find({
       limit: dto.limit,
       offset: dto.offset,
