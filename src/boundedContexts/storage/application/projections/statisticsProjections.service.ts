@@ -37,7 +37,24 @@ export class StatisticsProjectionsService {
     if (event instanceof StockMonthWasOpened) {
       return []
     } else if (event instanceof InventoryWasAdjusted) {
-      return []
+      const surplusInventoryAdjustedCountPoints = event.data.surplusItems.map(item => {
+        return new Point('inventory-adjusted-count')
+          .tag('locationId', event.data.locationId)
+          .tag('isFlammable', String(item.isFlammable))
+          .tag('isFragile', String(item.isFragile))
+          .tag('temperatureMode', item.temperatureMode)
+          .intField('value', 1);
+      })
+      const shortageInventoryAdjustedCountPoints = event.data.shortageItems.map(item => {
+        return new Point('inventory-adjusted-count')
+          .tag('locationId', event.data.locationId)
+          .tag('isFlammable', String(item.isFlammable))
+          .tag('isFragile', String(item.isFragile))
+          .tag('temperatureMode', item.temperatureMode)
+          .intField('value', -1);
+      })
+
+      return [...surplusInventoryAdjustedCountPoints, ...shortageInventoryAdjustedCountPoints];
     } else if (event instanceof ItemsWereReceived) {
       const receivedProductsCountPoints = event.data.items.map(item => {
         return new Point('received-products-count')
@@ -46,7 +63,7 @@ export class StatisticsProjectionsService {
           .tag('isFlammable', String(item.isFlammable))
           .tag('isFragile', String(item.isFragile))
           .tag('temperatureMode', item.temperatureMode)
-          .floatField('value', 1);
+          .intField('value', 1);
       })
 
       return [...receivedProductsCountPoints];
@@ -58,7 +75,7 @@ export class StatisticsProjectionsService {
           .tag('isFlammable', String(item.isFlammable))
           .tag('isFragile', String(item.isFragile))
           .tag('temperatureMode', item.temperatureMode)
-          .floatField('value', 1);
+          .intField('value', 1);
       })
 
       return [...shippedProductsCountPoints];

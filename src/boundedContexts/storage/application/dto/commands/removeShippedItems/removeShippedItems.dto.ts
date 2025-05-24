@@ -1,6 +1,6 @@
 import {
-  IsAlphanumeric,
   IsNotEmpty,
+  IsString,
   IsUUID,
   ValidateNested,
 } from 'class-validator';
@@ -15,12 +15,12 @@ export class RemoveShippedItemsDto {
   requestId!: string;
 
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   @ApiProperty({ example: '1' })
   locationId!: string;
 
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   @ApiProperty({ example: '1' })
   gateNumber!: string;
 

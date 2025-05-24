@@ -1,6 +1,6 @@
 import { StockItemDto } from '../../stockItem.dto';
 import {
-  IsAlphanumeric,
+  IsString,
   IsNotEmpty,
   IsUUID,
   ValidateNested,
@@ -15,12 +15,12 @@ export class AddReceivedItemsDto {
   requestId!: string;
 
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   @ApiProperty({ example: '1' })
   locationId!: string;
 
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   @ApiProperty({ example: '1' })
   gateNumber!: string;
 

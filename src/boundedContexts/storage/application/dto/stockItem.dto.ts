@@ -1,6 +1,5 @@
 import { TemperatureModeEnum } from '../../domain/aggregates/stockMonth/enums/temperatureMode.enum';
 import {
-  IsAlphanumeric,
   IsBoolean,
   IsEnum,
   IsInt,
@@ -19,7 +18,7 @@ export class StockItemDto {
   id!: string;
 
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   @ApiProperty({ example: 'Computer' })
   itemName!: string;
 

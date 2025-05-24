@@ -1,6 +1,5 @@
 import {
-  IsAlphanumeric,
-  IsNotEmpty,
+  IsNotEmpty, IsString,
   IsUUID,
   ValidateNested,
 } from 'class-validator';
@@ -15,7 +14,7 @@ export class AdjustInventoryDto {
   requestId!: string;
 
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   @ApiProperty({ example: '1' })
   locationId!: string;
 
