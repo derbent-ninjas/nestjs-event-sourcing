@@ -7,6 +7,8 @@ import { config } from './infrastructure/config/config';
 import { StockMonthEventEntity } from './boundedContexts/storage/dal/stockMonthEventEntity';
 import { StockProjection } from './boundedContexts/storage/dal/projections/stockProjection';
 import { StockItemProjection } from './boundedContexts/storage/dal/projections/stockItem.projection';
+import { Booking } from './boundedContexts/bookings/booking';
+import { BookingsModule } from './boundedContexts/bookings/bookings.module';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { StockItemProjection } from './boundedContexts/storage/dal/projections/s
             StockMonthEventEntity,
             StockProjection,
             StockItemProjection,
+            Booking,
           ],
           synchronize: config.db.synchronize,
           logging: false,
@@ -36,6 +39,7 @@ import { StockItemProjection } from './boundedContexts/storage/dal/projections/s
         return addTransactionalDataSource(new DataSource(options));
       },
     }),
+    BookingsModule,
     StorageModule,
   ],
 })
